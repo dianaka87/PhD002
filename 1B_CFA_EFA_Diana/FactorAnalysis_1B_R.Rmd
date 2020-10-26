@@ -1,0 +1,2183 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  html_notebook: default
+---
+
+```{r clear global environment, include=FALSE}
+rm(list = ls(all.names = TRUE)) #clears all variables in global environment
+```
+
+```{r include=FALSE}
+
+#initialise libraries
+library(foreign) #open external files
+library(psych)
+library(tibble) #tidy data
+library(formattable) #make tables
+library(pastecs) # for descriptives
+library(lavaan)
+library(ggplot2)
+#load dataset
+#dataset = read.spss("D:/1B/1B_CFA_EFA_Diana/1B_DATASET_long_R.sav", to.data.frame=TRUE)
+
+dataset = read.spss("D:/1B/1B_CFA_EFA_Diana/1B_DATASET_long_R_nomissing.sav", to.data.frame=TRUE)
+
+
+#copy of dataset that we can add the factors to
+data<-dataset
+
+#save subset in a separate variable for factor analysis
+data_AESTHEMOS<-cbind( data[, (39:80)])
+
+```
+
+```{r testing multivariate normality}
+library(MVN)
+mvn(data_AESTHEMOS)
+```
+
+CFA with original AESTHEMOS Factors
+
+```{r include=FALSE}
+CFA_AESTHEMOS<-
+'NegativeEmotions=~
+distasteful+ugly+confused+unsettling+aggressive+angry+indifferent+bored+worried+oppressive
+
+PrototypicalAesthetic=~
+deepmoved+touched+baffled+surprised+impressed+fascinated+liked+beautiful+sublime+awe
+
+Epistemic=~
+challenge+engaged+curious+sparkinterst+insight+deepmean
+
+Animation=~
+motivated+energized+spurredmeon+invigorated+wonderful+enchanted
+
+NostalgiaRelaxation=~
+nostalgic+sentimental+calm+relaxed
+
+Sadness=~
+sad+melancholic
+
+Amusement=~
+amused+funny+delight+happy'
+
+
+```
+
+```{r}
+
+
+CFA_AESTHEMOS_orth.fit<-lavaan::cfa(CFA_AESTHEMOS,
+                         data=data,
+                      
+                      rotation='varimax',
+                        orthogonal=TRUE, 
+                         estimator="WLSMV", 
+                         std.lv=TRUE)
+
+fit_orth<-as.data.frame(fitmeasures(CFA_AESTHEMOS_orth.fit))
+
+
+CFA_AESTHEMOS_obl.fit<-lavaan::cfa(CFA_AESTHEMOS,
+                         data=data,
+                      
+                     #  rotation='varimax',
+                      #  orthogonal=TRUE, 
+                         estimator="WLSMV", 
+                         std.lv=TRUE)
+  
+
+fit_obl<-as.data.frame(fitmeasures(CFA_AESTHEMOS_obl.fit))
+
+
+# saving fitindices to dataframe
+
+AEST_fitmeasures<-data.frame(
+  "fitindices"=c("chi square", 
+                 "df (chi square)", 
+                 "p (chi square)",
+                 "cfi", 
+                 "tli", 
+                 "rmsea", 
+                 "agfi" ),
+  "orthogonal"=c(fit_orth["chisq",], fit_orth["df",], fit_orth["pvalue",], fit_orth["cfi",], fit_orth["tli",], fit_orth["rmsea",], fit_orth["agfi",]),
+  
+  "oblimin"= c(fit_obl["chisq",], fit_obl["df",], fit_obl["pvalue",], fit_obl["cfi",], fit_obl["tli",], fit_obl["rmsea",], fit_obl["agfi",]))
+
+# reduce to only 2 decimal places so it looks less chaotic
+is.num <- sapply(AEST_fitmeasures, is.numeric)
+AEST_fitmeasures[is.num] <- lapply(AEST_fitmeasures[is.num], round, 2)
+
+      
+```
+
+```{r}
+                  
+print(AEST_fitmeasures)
+
+```
+
+
+Fit
+
+## STEP 1: determine the number of factors
+
+```{r}
+fa.parallel(data_AESTHEMOS,  fm="wls", fa="fa")
+
+```
+
+### --> parallelanalysis and screeplot indicate 7 factors, which also has a the best fit when compared to other solutions
+
+
+
+
+## STEP 2: Factor analysis with 7 factors (as suggested by previous parallel analysis), varimax rotation is applied, weighted least squares (WLS) is used to estimate the factors 
+
+```{r include=FALSE}
+
+#7 Factors are suggested
+EFA7<-fa(r=data_AESTHEMOS, scores = "regression", nfactors = 7, rotate="varimax", fm="wls" )
+
+print(EFA7, digits=2, cutoff=.3, sort=TRUE) 
+summary(EFA7)
+
+```
+
+### path diagram for the first EFA
+```{r path diagram EFA, echo=FALSE, fig.height=7, fig.width=7}
+fa.diagram(EFA7, e.size=0.09, rsize = 0.33,errors=TRUE)
+
+```
+
+```{r include=FALSE}
+
+library(dplyr)
+
+#EFA_results_ord <- EFA_results%>% mutate(name = reorder(name, desc(ID)))
+
+#str(EFA_results_ord)
+
+#df<-as.data.frame(EFA_results_ord)
+
+
+#EFA_results_long<-reshape(data=df,
+ #                                  idvar='ID',
+  #                                 varying = c("F1","F2","F3","F4","F5","F6","F7" ),
+  #                                 v.name=c("loadings"),# list('EFA5_Factor1','EFA5_Factor2'),#,'EFA5_Factor3','EFA5_Factor4', 'EFA5_Factor5'),
+                  #                 timevar = 'factor',
+                                   #times=c("F1","F2","F3","F4","F5","F6", "F7"),
+                                   #new.row.names=1:10000,#,EFA5_Factor3,EFA5_Factor4,EFA5_Factor5),
+ #                                  direction='long')
+
+
+
+   
+```
+
+```{r fig.width=20,fig.height=18}
+
+#library(ggplot2)
+
+#ggplot(EFA_results_long, aes(name,abs(loadings),fill=loadings))+
+ #  facet_wrap(~factor, nrow=1)+
+  # geom_bar(stat = "identity")+
+  # coord_flip()+
+  #scale_fill_gradient2(name="Factorloadings",high="turquoise4",mid="paleturquoise",low="salmon",    midpoint = 0, guide=F)+
+  #ylab("Loading strength")+
+  #xlab("Item name")+
+ #theme_bw(base_size = 28)
+
+
+```
+
+
+The seven factor solution revealed some cross-loadings of items on several factors. Items that showed loadings on several factors with a difference of less than .20 were removed. Another EFA was carried out with the remaining items.
+
+
+## to make the next step a bit simpler the retained items are saved into a new data frame
+```{r}
+EFA_reduced<-tibble(data$energized,
+                    data$spurredmeon,
+                    data$invigorated,
+                    data$motivated,
+                    data$delight,
+                    data$happy,
+                    data$amused,
+                    data$funny,
+                    
+                    data$sentimental,
+                    data$deepmoved,
+                    data$touched,
+                    data$nostalgic,
+                    data$melancholic,
+                    data$sad,
+                    data$deepmean,
+                    
+                    data$distasteful,
+                    data$ugly,
+                    data$worried,
+                    data$unsettling,
+                    data$angry,
+                    data$aggressive,
+                    data$confused,
+                    data$oppressive,
+
+                    data$bored,
+                    data$indifferent)
+
+names(EFA_reduced)<-c("energized",
+                    "spurredmeon",
+                    "invigorated",
+                    "motivated",
+                    "delight",
+                    "happy",
+                    "amused",
+                    "funny",
+                    
+                    "sentimental",
+                    "deepmoved",
+                    "touched",
+                    "nostalgic",
+                    "melancholic",
+                    "sad",
+                    "deepmean",
+                    
+                    "distasteful",
+                    "ugly",
+                    "worried",
+                    "unsettling",
+                    "angry",
+                    "aggressive",
+                    "confused",
+                    "oppressive",
+                    "bored",
+                    "indifferent"
+                    )
+
+
+ EFA_ordered<- as.data.frame(lapply(EFA_reduced[
+   ,c("energized",
+      "spurredmeon",
+      "invigorated",
+      "motivated",
+      "delight",
+      "happy",
+      "amused",
+      "funny",
+      
+      "sentimental",
+      "deepmoved",
+      "touched",
+      "nostalgic",
+      "melancholic",
+      "sad",
+      "deepmean",
+      
+      "distasteful",
+      "ugly",
+      "worried",
+      "unsettling",
+      "angry",
+      "aggressive",
+      "confused",
+      "oppressive",
+      
+      "bored",
+      "indifferent"
+                  )],
+         ordered))
+```
+
+### second parallel analysis to determine the number of factors in the reduced data set
+
+```{r}
+fa.parallel(EFA_reduced,  fm="wls", fa="fa")
+
+```
+
+the parallel analysis suggests 4 factors 
+
+### A second factor analysis was carried out.
+
+```{r}
+second_EFA<-psych::fa(EFA_reduced, nfactors = 4, rotate='varimax',fm="wls", fa="fa")
+
+print(second_EFA, sort=TRUE, digits = 2)
+```
+
+A CFA is carried out to confirm the EFA model with four factors.
+
+
+```{r}
+
+require(parameters)
+if (require("psych") && require("lavaan"))
+  
+
+  #this model gets rejected
+  model1<-'
+  M1=~worried+ unsettling+distasteful + ugly 
+  M2=~energized + spurredmeon + motivated + invigorated
+  M3=~deepmoved+touched+sentimental+melancholic
+  M4=~bored+indifferent'
+   
+ model1.fit<-lavaan::cfa(model1,
+                         data=EFA_reduced,
+                         rotation='varimax',
+                         orthogonal=TRUE, 
+                         estimator="WLSMV", 
+                         std.lv=TRUE)
+  
+#summary(model1.fit)
+```
+
+This model is rejected. As the measures for factor adequacy are comparatively low and there are only two items loading in that factor, another CFA was carried out with only the first major 3 factors.
+
+
+```{r}
+
+  # this model works
+  model2<-'
+  M1=~worried+ unsettling+distasteful + ugly 
+  M2=~energized + spurredmeon + motivated + invigorated
+  M3=~deepmoved+touched+sentimental+melancholic '
+   
+ model2.fit<-lavaan::cfa(model2,
+                         data=EFA_ordered,
+                         rotation='varimax',
+                         orthogonal=TRUE, 
+                         estimator="WLSMV", 
+                         std.lv=TRUE)
+  
+fitmeasures(model2.fit)
+summary(model2.fit)
+factorscores<-lavPredict(model2.fit)
+lavaan::inspect(model2.fit, 'r2')
+var<-mean(lavaan::lavInspect(model2.fit, 'r2'))
+
+lavaan::inspectSampleCov(model=model2, data=EFA_ordered)
+#lavaan::inspectSampleCov(data=model2.fit)
+lavPredict(model2.fit,se="standard")
+CFA_factorscores<-lavPredict(model2.fit)
+#summary(model2.fit, rsquare = TRUE)
+```
+The second model fits well, the RMSEA and SRMR are higher than the cutoff value, however, these values are based on normal continuous data and it has been discussed that these are not as appropriate for non-normal ordinal data - as the other fitindices indicate good fit and the items that are loading on these factors make sense, we accept the model.
+
+Next we see how much variance can be explained by these three factors.
+
+```{r create new df with all rsquares, include=FALSE}
+#parameterEstim<-parameterEstimates(model2.fit, rsquare = TRUE)
+variance<-summary(model2.fit, rsquare = TRUE)
+variance<-as.data.frame(variance)
+
+```
+
+```{r calculate R square, echo=FALSE}
+Rsquare<- mean(variance[(106:117),]$PE.est)
+
+varF1<-mean(variance[(106:109),]$PE.est)
+varF2<-mean(variance[(110:113),]$PE.est)
+varF3<-mean(variance[(114:117),]$PE.est)
+
+```
+
+
+
+
+```{r path diagram of confirmatory structure, fig.height=10, fig.width=10}
+
+labels <- list(
+  M3 = "being moved",
+  M2 = "activated",
+  M1 = "negative valence")
+
+#modelplot<-
+
+lavaanPlot::lavaanPlot(model = model2.fit, labels=labels,node_options = list( style = "filled",color = "Silver", fillcolor="PaleGoldenrod", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = T, stand = F,sig = 1.00,covs = T)
+
+#lavaan.diagram(model2.fit, e.size=0.055, errors=TRUE, regression=TRUE)
+#sem.graph(CFA7.modelfit)
+#sem.diagram(CFA7.modelfit)
+
+modelplot
+```
+
+```{r calculate cronbachs alpha for internal consistency}
+
+F1<-tibble(EFA_reduced$worried, EFA_reduced$unsettling, EFA_reduced$distasteful, EFA_reduced$ugly)
+
+F2<-tibble(EFA_reduced$sentimental, EFA_reduced$deepmoved, EFA_reduced$touched, EFA_reduced$melancholic)
+
+F3<-tibble(EFA_reduced$energized, EFA_reduced$spurredmeon, EFA_reduced$invigorated, EFA_reduced$motivated)
+
+F1_alpha<-psych::alpha(x=F1)
+F2_alpha<-psych::alpha(x=F2)
+F3_alpha<-psych::alpha(x=F3)
+```
+
+
+```{r cronbachs alpha for factor 1}
+F1_alpha
+```
+```{r cronbachs alpha for factor 2}
+F2_alpha
+```
+
+```{r cronbachs alpha for factor 3}
+F3_alpha
+```
+
+Internal consistncy for all factors is very high. 
+(not really surprising)
+
+
+## The factor scores are extracted using the weighted least score mean and variance (WLSMV) estimation method.
+
+
+```{r}
+CFA_factorscores<-lavPredict(model2.fit)
+```
+
+```{r attach EFA values to dataset}
+
+## loop over factors
+idxframe<-data.frame(as.integer(rownames(data)))
+idx <- idxframe[,1]
+for (fs in colnames(CFA_factorscores)) {
+  data[idx, fs] <- CFA_factorscores[ , fs]
+}
+
+```
+
+Next step: z-standardise all variables (factors and predictors)
+```{r include=FALSE}
+
+#save everything to new df in case things get messy
+
+newFA_data<-data
+#z-standardize values into new dataframe
+ZnewFA_data<-newFA_data
+ZnewFA_data$ID<-data$ID
+ZnewFA_data$ID<-data$Participant
+ZnewFA_data$order_excerpt<-data$order_excerpt
+#ZnewFA_data$Gender<-data$gender
+#ZnewFA_data$excerpt_nmbr<-data$excerpt_nmbr
+ZnewFA_data$excerpt_ID<-data$excerpt_ID
+ZnewFA_data$emotion_expressed<-data$emotion_expressed
+
+
+ZnewFA_data$ZCFA_F1<-scale(newFA_data$M1, center = TRUE, scale=TRUE)
+ZnewFA_data$ZCFA_F2<-scale(newFA_data$M2, center = TRUE, scale=TRUE)
+ZnewFA_data$ZCFA_F3<-scale(newFA_data$M3, center = TRUE, scale=TRUE)
+
+
+ZnewFA_data$Z_Neutral_FaceMeanDIV<-scale(data$Neutral_FaceMeanDIV,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_Happy_FaceMeanDIV<-scale(data$Happy_FaceMeanDIV,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_Sadness_FaceMeanDIV<-scale(data$Sadness_FaceMeanDIV,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_Anger_FaceMeanDIV<-scale(data$Anger_FaceMeanDIV,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_Surprise_FaceMeanDIV<-scale(data$Surprise_FaceMeanDIV,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_Fear_FaceMeanDIV<-scale(data$Fear_FaceMeanDIV,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_Disgust_FaceMeanDIV<-scale(data$Disgust_FaceMeanDIV,center = TRUE, scale=TRUE)
+
+
+#ZnewFA_data$Z_meanAccel<-scale(data$meanAccel,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_meanAccelB<-scale(data$meanAccelB,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meanAccelB<-scale(data$meanACCEL,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meangsr<-scale(data$meangsr,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_meangsrB<-scale(data$meangsrB,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meangsrB<-scale(data$meanGSR,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meangsrfilt<-scale(data$meangsrfilt,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_meangsrfiltB<-scale(data$meangsrfiltB,center = TRUE, scale=TRUE)
+#ZnewFA_data$Z_meanSUM_N_IncA<-scale(data$meanSUM_N_IncA,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_meanSUM_N_IncAB<-scale(data$meanSUM_N_IncAB,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meanSUM_N_IncAB<-scale(data$n_NSSCR,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meanSUM_IncA<-scale(data$meanSUM_IncA,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_meanSUM_IncAB<-scale(data$meanSUM_IncAB,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meanSUM_IncAB<-scale(data$amp_NSSCR,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meanbvpRate<-scale(data$meanbvpRate,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_meanbvpRateB<-scale(data$meanbvpRateB,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meanbvpRateB<-scale(data$BVP_R,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meanbvpAmp<-scale(data$meanbvpAmp,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_meanbvpAmpB<-scale(data$meanbvpAmpB,center = TRUE, scale=TRUE)
+
+#ZnewFA_data$Z_meanbvpAmpB<-scale(data$BVP_AMP,center = TRUE, scale=TRUE)
+
+
+
+ZnewFA_data$Z_basic_anger<-scale(data$basic_anger,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_basic_disgust<-scale(data$basic_disgust,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_basic_fear<-scale(data$basic_fear,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_basic_happiness<-scale(data$basic_happiness,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_basic_neutral<-scale(data$basic_neutral,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_basic_sadness<-scale(data$basic_sadness,center = TRUE, scale=TRUE)
+ZnewFA_data$Z_basic_surprise<-scale(data$basic_surprise,center = TRUE, scale=TRUE)
+
+ZnewFA_data$ZIRI_FS<-scale(data$IRI_FS,center = TRUE, scale=TRUE)
+ZnewFA_data$ZIRI_EC<-scale(data$IRI_EC,center = TRUE, scale=TRUE)
+ZnewFA_data$ZIRI_PT<-scale(data$IRI_PT,center = TRUE, scale=TRUE)
+ZnewFA_data$ZIRI_PD<-scale(data$IRI_PD,center = TRUE, scale=TRUE)
+
+ZnewFA_data$Z_approach<-scale(data$approach,center = TRUE, scale=TRUE)
+ZnewFA_data$ZTIPI_Agree<-scale(data$tipi_agreeable,center = TRUE, scale=TRUE)
+ZnewFA_data$ZTIPI_Open<-scale(data$tipi_openeness,center = TRUE, scale=TRUE)
+ZnewFA_data$ZTIPI_Extro<-scale(data$tipi_extroversion,center = TRUE, scale=TRUE)
+ZnewFA_data$ZTIPI_Consc<-scale(data$tipi_conscient,center = TRUE, scale=TRUE)
+ZnewFA_data$ZTIPI_Stab<-scale(data$tipi_emotionstab,center = TRUE, scale=TRUE)
+
+
+
+```
+
+# Correlation between factors and basic emotion terms
+
+```{r correlation between factors and basic emotion terms}
+
+#save values in separate df
+
+cor_factorsbasic<-as.data.frame(cbind(
+  ZnewFA_data$M1, 
+  ZnewFA_data$M2,
+  ZnewFA_data$M3,
+  ZnewFA_data$Z_basic_happiness,
+  ZnewFA_data$Z_basic_sadness,
+  ZnewFA_data$Z_basic_anger,
+  ZnewFA_data$Z_basic_surprise,
+  ZnewFA_data$Z_basic_fear,
+  ZnewFA_data$Z_basic_disgust))
+
+names(cor_factorsbasic)<-c("Factor1", "Factor2", "Factor3", "Happiness", "Sadness", "Anger", "Surprise", "Fear", "Disgust")
+
+library("Hmisc")
+
+corfac<-rcorr(as.matrix(cor_factorsbasic))
+corfac2<-cor(cor_factorsbasic)
+print(cor(cor_factorsbasic,),digits=2)
+
+col<-colorRampPalette(c("blue", "white","red"))(20)
+heatmap(x=corfac2, col=col,symm=TRUE)
+corrplot(corfac2, type="upper",  tl.col="black", tl.srt = 45)
+```
+
+
+
+# Step 4: Hierarchichal Linear Models for all 3 Factors
+
+
+## Subjective Ratings Factor 1
+[predictors with t < 1 were excluded]
+
+### Result: Factor 1 can be be predicted by: more neutral as well as happy and fearful facial expressions.
+```{r some more libraries, include=FALSE}
+library(afex) #get p-values
+library(lme4) #linear model
+library(rcompanion) # to load the nagelkerke function
+
+```
+
+HLM Factor 1
+```{r hierarchical linear model factor 1, echo=FALSE}
+
+#lm_F1_null<-lmer(ZCFA_F1~1*Z_Neutral_FaceMeanDIV+(1|ID), data=ZnewFA_data)
+
+lm_F1b<-lmer(ZCFA_F1~
+              # Z_Neutral_FaceMeanDIV+
+                  #  Z_Happy_FaceMeanDIV+ 
+                 #   Z_Sadness_FaceMeanDIV+  
+                    Z_Anger_FaceMeanDIV+   (Z_Anger_FaceMeanDIV|ID)+(0+Z_Anger_FaceMeanDIV|emotion_expressed)+ #I've allowed an intercept and slope for the facial expressions but not for the physiological correlates because facial expressions are used in everyday life and they can be controlled voluntarily, probably there are also more individual differences in expressiveness (e.g. gender, culture) but I thing the physiological correlates are more universal and it's the music that has an effect rather than the participant - they cant be controlled voluntarily. I have not used emotion expressed as random factor for the facial expressions here as people can still control them better - independent of the emotion expressed in the music - 
+                 #  Z_Surprise_FaceMeanDIV+ 
+                  #  Z_Fear_FaceMeanDIV+ 
+                    Z_Disgust_FaceMeanDIV +  (Z_Disgust_FaceMeanDIV|ID)+(0+Z_Disgust_FaceMeanDIV|emotion_expressed)+
+            
+                    Z_meanAccelB+ (0+Z_meanAccelB|emotion_expressed)+
+                   # Z_meangsrB+   
+              #      Z_meanSUM_N_IncAB+ 
+                  #  Z_meanSUM_IncAB+  
+                    Z_meanbvpRateB+   (0+Z_meanbvpRateB|emotion_expressed)+
+                 #   Z_meanbvpAmpB+ 
+                  #  (1|order_excerpt:emotion_expressed)+
+                    (0+order_excerpt:emotion_expressed|ID)+(1|ID)+(1|order_excerpt:emotion_expressed), data=ZnewFA_data, REML = FALSE)
+
+lm_F1b.fit<-summary(lm_F1b)
+lm_F1b.confidence<-as.data.frame(confint(lm_F1b,method="Wald", level=0.95))
+nullmodel_F1b<-lmer(ZCFA_F1~1 + (1|order_excerpt)+ (1|ID), data=ZnewFA_data, REML = FALSE)
+#summary(nullmodel_F1b)
+#nagelkerke(lm_F1b, nullmodel_F1b)
+```
+Anova Factor 1
+```{r print ANOVA LMM Factor 1, echo=FALSE}
+print(anova(lm_F1b))
+```
+Model Summary Factor 1
+```{r print summary LMM Factor 1, echo=FALSE}
+print(lm_F1b.fit)
+```
+Confidence Intervals Factor 1
+```{r print confidence intervals Factor 1, echo=FALSE}
+
+print(confint(lm_F1,method="Wald", level=0.95))
+
+```
+Df to plot Factor 1
+```{r new df with coefficients etc for plotting Factor 1, eval=FALSE, include=FALSE}
+lm_F1.coefficients<-as.data.frame(lm_F1.fit$coefficients)
+#Factor 1
+df_F1<-data.frame("dp"=c("Factor 1"), 
+                  
+                  "predictor"= c("13 FE Neutral", "12 FE Happy", "11 FE Sadness", "10 FE Anger", "09 FE Surprise", "08 FE Fear", "07 FE Disgust", "06 Movement", "05 SCL", "04 SCR count", "03 SCR amplitude", "02 BVP rate", "01 BVP amplitude"),
+                  
+                  "beta"=c(lm_F1.coefficients$Estimate[2], 0, lm_F1.coefficients$Estimate[3],lm_F1.coefficients$Estimate[4],0, lm_F1.coefficients$Estimate[5], lm_F1.coefficients$Estimate[6], lm_F1.coefficients$Estimate[7], 0, lm_F1.coefficients$Estimate[8], lm_F1.coefficients$Estimate[9],0,0),
+                  "CIlower"=c(lm_F1.confidence$`2.5 %`[4],0,lm_F1.confidence$`2.5 %`[5],lm_F1.confidence$`2.5 %`[6],0, lm_F1.confidence$`2.5 %`[7], lm_F1.confidence$`2.5 %`[8],lm_F1.confidence$`2.5 %`[9],0,lm_F1.confidence$`2.5 %`[10],lm_F1.confidence$`2.5 %`[11],0,0),
+                  "CIupper"=c(lm_F1.confidence$`97.5 %`[4],0,lm_F1.confidence$`97.5 %`[5],lm_F1.confidence$`97.5 %`[6],0,lm_F1.confidence$`97.5 %`[7],lm_F1.confidence$`97.5 %`[8],lm_F1.confidence$`97.5 %`[9],0,lm_F1.confidence$`97.5 %`[10],lm_F1.confidence$`97.5 %`[11],0,0),
+                  
+                  "SE"=c(lm_F1.coefficients$`Std. Error`[2],0,lm_F1.coefficients$`Std. Error`[3],lm_F1.coefficients$`Std. Error`[4],0,lm_F1.coefficients$`Std. Error`[5],lm_F1.coefficients$`Std. Error`[6],lm_F1.coefficients$`Std. Error`[7],0,lm_F1.coefficients$`Std. Error`[8],lm_F1.coefficients$`Std. Error`[9],0,0),
+                  
+                  "df"=c(lm_F1.coefficients$df[2], 0, lm_F1.coefficients$df[3],lm_F1.coefficients$df[4],0, lm_F1.coefficients$df[5], lm_F1.coefficients$df[6], lm_F1.coefficients$df[7], 0, lm_F1.coefficients$df[8], lm_F1.coefficients$df[9],0,0),
+                  
+                  "tvalue" = c(lm_F1.coefficients$`t value`[2], 0, lm_F1.coefficients$`t value`[3],lm_F1.coefficients$`t value`[4],0, lm_F1.coefficients$`t value`[5], lm_F1.coefficients$`t value`[6], lm_F1.coefficients$`t value`[7], 0, lm_F1.coefficients$`t value`[8], lm_F1.coefficients$`t value`[9],0,0),
+                  "p" =c(lm_F1.coefficients$`Pr(>|t|)`[2], 0, lm_F1.coefficients$`Pr(>|t|)`[3],lm_F1.coefficients$`Pr(>|t|)`[4],0, lm_F1.coefficients$`Pr(>|t|)`[5], lm_F1.coefficients$`Pr(>|t|)`[6], lm_F1.coefficients$`Pr(>|t|)`[7], 0, lm_F1.coefficients$`Pr(>|t|)`[8], lm_F1.coefficients$`Pr(>|t|)`[9],0,0)
+                  )
+
+```
+Plot Factor 1
+```{r plot factor 1, echo=FALSE}
+data1=df_F1
+x_df1=df_F1$predictor
+y_df1=df_F1$beta
+lower_df1=df_F1$CIlower
+upper_df1=df_F1$CIupper
+
+plotCFAFac1<-ggplot(data=data1, aes(x = x_df1, y = y_df1, ymin=lower_df1,
+                   ymax=upper_df1)) + 
+ geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+#  geom_hline(yintercept = 1, linetype = 2) +
+#  scale_y_log10() + ### This is the line that makes the transfomation
+  theme_bw() + 
+  theme(
+    #plot.margin = unit(c(1, 1, 1, 4), "lines"),
+        axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.position="none")  +
+#  facet_wrap(~ Factor) 
+  coord_flip()+
+
+  xlab("Standardized coefficients (β)") +
+  ylab("Predictors")+
+  ggtitle("Factor 1")
+
+plotCFAFac1
+```
+HLM Factor 2
+```{r hierarchical linear model for factor 2, echo=FALSE}
+lm_F2<-lmer(ZCFA_F2~
+                    Z_Neutral_FaceMeanDIV+  
+                    Z_Happy_FaceMeanDIV+
+                    Z_Sadness_FaceMeanDIV+  
+                  #  Z_Anger_FaceMeanDIV+     
+                    Z_Surprise_FaceMeanDIV+ 
+                    Z_Fear_FaceMeanDIV+ 
+                  #  Z_Disgust_FaceMeanDIV +  ##
+             
+             
+                  #  Z_meanAccelB+
+                    Z_meangsrB+     
+                    Z_meanSUM_N_IncAB+  ##
+                  #  Z_meanSUM_IncAB+      ##
+                  #  Z_meanbvpRateB+ ##
+                  #  Z_meanbvpAmpB+ ##
+                   (1|ID), data=ZnewFA_data, REML = FALSE)
+
+
+lm_F2.fit<-summary(lm_F2)
+lm_F2.coefficients<-as.data.frame(lm_F2.fit$coefficients)
+lm_F2.confidence<-as.data.frame(confint(lm_F2,method="Wald", level=0.95))
+nullmodel_F2<-lmer(ZCFA_F2~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+
+summary(nullmodel_F2)
+nagelkerke(lm_F2, nullmodel_F2)
+```
+Anova Factor 2
+```{r print ANOVA LMM Factor 2, echo=FALSE}
+print(anova(lm_F2))
+```
+Model Summary Factor 2
+```{r print summary LMM Factor 2, echo=FALSE}
+print(lm_F2.fit)
+```
+Confidence Intervals Factor 2
+```{r print confidence intervals Factor 2, echo=FALSE}
+print(confint(lm_F2,method="Wald", level=0.95))
+
+```
+Df to plot Factor 2
+```{r new df with coefficients etc for plotting Factor 2, include=FALSE}
+lm_F2.coefficients<-as.data.frame(lm_F2.fit$coefficients)
+#Factor 2
+df_F2<-data.frame("dp"=c("Factor 2"), 
+                  
+                  "predictor"= c("13 FE Neutral", "12 FE Happy", "11 FE Sadness", "10 FE Anger", "09 FE Surprise", "08 FE Fear", "07 FE Disgust", "06 Movement", "05 SCL", "04 SCR count", "03 SCR amplitude", "02 BVP rate", "01 BVP amplitude"),
+                  
+                  "beta"=c(lm_F2.coefficients$Estimate[2], lm_F2.coefficients$Estimate[3],lm_F2.coefficients$Estimate[4],0, lm_F2.coefficients$Estimate[5], lm_F2.coefficients$Estimate[6],0,0,0, lm_F2.coefficients$Estimate[7], lm_F2.coefficients$Estimate[8],0,0),
+                  "CIlower"=c(lm_F2.confidence$`2.5 %`[4],lm_F2.confidence$`2.5 %`[5],lm_F2.confidence$`2.5 %`[6],0,lm_F2.confidence$`2.5 %`[7],lm_F2.confidence$`2.5 %`[8],0,0,0,lm_F2.confidence$`2.5 %`[9],lm_F2.confidence$`2.5 %`[10],0,0),
+                  "CIupper"=c(lm_F2.confidence$`97.5 %`[4],lm_F2.confidence$`97.5 %`[5],lm_F2.confidence$`97.5 %`[6],0,lm_F2.confidence$`97.5 %`[7],lm_F2.confidence$`97.5 %`[8],0,0,0,lm_F2.confidence$`97.5 %`[9],lm_F2.confidence$`97.5 %`[10],0,0),
+                  
+                  "SE"=c(lm_F2.coefficients$`Std. Error`[2],lm_F2.coefficients$`Std. Error`[3],lm_F2.coefficients$`Std. Error`[4],0,lm_F2.coefficients$`Std. Error`[5],lm_F2.coefficients$`Std. Error`[6],0,0,0,lm_F2.coefficients$`Std. Error`[7],lm_F2.coefficients$`Std. Error`[8],0,0),
+                  
+                  "df"=c(lm_F2.coefficients$df[2], lm_F2.coefficients$df[3],lm_F2.coefficients$df[4],0, lm_F2.coefficients$df[5], lm_F2.coefficients$df[6],0,0,0, lm_F2.coefficients$df[7], lm_F2.coefficients$df[8], 0,0),
+                  
+                  "tvalue" = c(lm_F2.coefficients$`t value`[2], lm_F2.coefficients$`t value`[3],lm_F2.coefficients$`t value`[4],0, lm_F2.coefficients$`t value`[5], lm_F2.coefficients$`t value`[6],0,0,0, lm_F2.coefficients$`t value`[7],  lm_F2.coefficients$`t value`[8],0,0),
+                  "p" =c(lm_F2.coefficients$`Pr(>|t|)`[2], lm_F2.coefficients$`Pr(>|t|)`[3],lm_F2.coefficients$`Pr(>|t|)`[4],0, lm_F2.coefficients$`Pr(>|t|)`[5], lm_F2.coefficients$`Pr(>|t|)`[6],0,0,0, lm_F2.coefficients$`Pr(>|t|)`[7],  lm_F2.coefficients$`Pr(>|t|)`[8],0,0)
+                  )
+```
+Plot Factor 2
+```{r plot factor 2, echo=FALSE}
+#Factor 2
+
+data2=df_F2
+x_df2=df_F2$predictor
+y_df2=df_F2$beta
+lower_df2=df_F2$CIlower
+upper_df2=df_F2$CIupper
+
+plotCFAFac2<- ggplot(data=data2, aes(x = x_df2, y = y_df2, ymin=lower_df2,
+                   ymax=upper_df2)) + 
+ geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+#  geom_hline(yintercept = 1, linetype = 2) +
+#  scale_y_log10() + ### This is the line that makes the transfomation
+  theme_bw() + 
+  theme(
+    #plot.margin = unit(c(1, 1, 1, 4), "lines"),
+        axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.position="none")  +
+#  facet_wrap(~ Factor) 
+  coord_flip()+
+
+
+
+  xlab("Standardized coefficients (β)") +
+  ylab("Predictors")+
+
+  ggtitle("Factor 2")
+
+
+
+
+plotCFAFac2
+```
+HLM Factor 3
+```{r hierarchical linear model for factor 3, echo=FALSE}
+
+lm_F3<-lmer(ZCFA_F3~
+                    Z_Neutral_FaceMeanDIV+  ##
+                  #  Z_Happy_FaceMeanDIV+
+                    Z_Sadness_FaceMeanDIV+  
+                    Z_Anger_FaceMeanDIV+     
+                  #  Z_Surprise_FaceMeanDIV+ 
+                  #  Z_Fear_FaceMeanDIV+ 
+                  #  Z_Disgust_FaceMeanDIV +  ##
+                    Z_meanAccelB+
+                    Z_meangsrB+     
+                    Z_meanSUM_N_IncAB+  ##
+                #    Z_meanSUM_IncAB+      ##
+                #    Z_meanbvpRateB+ ##
+                    Z_meanbvpAmpB+ ##
+                   (1|ID), data=ZnewFA_data, REML = FALSE)
+
+
+lm_F3.fit<-summary(lm_F3)
+lm_F3.confidence<-as.data.frame(confint(lm_F3,method="Wald", level=0.95))
+
+nullmodel_F3<-lmer(ZCFA_F3~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+
+summary(nullmodel_F3)
+nagelkerke(lm_F3, nullmodel_F3)
+
+```
+Anova Factor 3
+```{r print ANOVA LMM Factor 3, echo=FALSE}
+print(anova(lm_F3))
+```
+Model Summary Factor 3
+```{r print summary LMM Factor 3, echo=FALSE}
+print(lm_F3.fit)
+```
+Confidence Intervals Factor 3
+```{r print confidence intervals Factor 3, echo=FALSE}
+print(confint(lm_F3,method="Wald", level=0.95))
+
+```
+Df to plot Factor 3
+```{r new df with coefficients etc for plotting Factor 3, include=FALSE}
+lm_F3.coefficients<-as.data.frame(lm_F3.fit$coefficients)
+#Factor 1
+df_F3<-data.frame("dp"=c("Factor 3"), 
+                  
+                  "predictor"= c("13 FE Neutral", "12 FE Happy", "11 FE Sadness", "10 FE Anger", "09 FE Surprise", "08 FE Fear", "07 FE Disgust", "06 Movement", "05 SCL", "04 SCR count", "03 SCR amplitude", "02 BVP rate", "01 BVP amplitude"),
+                  
+                  "beta"=c(lm_F3.coefficients$Estimate[2], 0, lm_F3.coefficients$Estimate[3],lm_F3.coefficients$Estimate[4],0,0,0, lm_F3.coefficients$Estimate[5], lm_F3.coefficients$Estimate[6], lm_F3.coefficients$Estimate[7], 0,0, lm_F3.coefficients$Estimate[8]),
+                  
+                              "CIlower"=c(lm_F3.confidence$`2.5 %`[4],0,lm_F3.confidence$`2.5 %`[5],lm_F3.confidence$`2.5 %`[6],0,0,0,lm_F3.confidence$`2.5 %`[7],lm_F3.confidence$`2.5 %`[8],lm_F3.confidence$`2.5 %`[9],0,0,lm_F3.confidence$`2.5 %`[10]),
+                  "CIupper"=c(lm_F3.confidence$`97.5 %`[4],0,lm_F3.confidence$`97.5 %`[5],lm_F3.confidence$`97.5 %`[6],0,0,0,lm_F3.confidence$`97.5 %`[7],lm_F3.confidence$`97.5 %`[8],lm_F3.confidence$`97.5 %`[9],0,0,lm_F3.confidence$`97.5 %`[10]),
+                  "SE"=c(lm_F3.coefficients$`Std. Error`[2],0,lm_F3.coefficients$`Std. Error`[3],lm_F3.coefficients$`Std. Error`[4],0,0,0,lm_F3.coefficients$`Std. Error`[5],lm_F3.coefficients$`Std. Error`[6],lm_F3.coefficients$`Std. Error`[7],0,0,lm_F3.coefficients$`Std. Error`[8]),
+                  
+                  "df"=c(lm_F3.coefficients$df[2], 0, lm_F3.coefficients$df[3],lm_F3.coefficients$df[4],0,0,0, lm_F3.coefficients$df[5], lm_F3.coefficients$df[6], lm_F3.coefficients$df[7], 0,0, lm_F3.coefficients$df[8]),
+                  
+                  "tvalue" = c(lm_F3.coefficients$`t value`[2], 0, lm_F3.coefficients$`t value`[3],lm_F3.coefficients$`t value`[4],0,0,0, lm_F3.coefficients$`t value`[5], lm_F3.coefficients$`t value`[6], lm_F3.coefficients$`t value`[7], 0,0, lm_F3.coefficients$`t value`[8]),
+                  "p" =c(lm_F3.coefficients$`Pr(>|t|)`[2], 0, lm_F3.coefficients$`Pr(>|t|)`[3],lm_F3.coefficients$`Pr(>|t|)`[4],0,0,0, lm_F3.coefficients$`Pr(>|t|)`[5], lm_F3.coefficients$`Pr(>|t|)`[6], lm_F3.coefficients$`Pr(>|t|)`[7], 0,0, lm_F3.coefficients$`Pr(>|t|)`[8])
+                  )
+
+```
+plot Factor 3
+```{r plot factor 3, echo=FALSE}
+data3=df_F3
+x_df3=df_F3$predictor
+y_df3=df_F3$beta
+lower_df3=df_F3$CIlower
+upper_df3=df_F3$CIupper
+
+plotCFAFac3<- ggplot(data=data3, aes(x = x_df3, y = y_df3, ymin=lower_df3,
+                   ymax=upper_df3)) + 
+ geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+#  geom_hline(yintercept = 1, linetype = 2) +
+#  scale_y_log10() + ### This is the line that makes the transfomation
+  theme_bw() + 
+  theme(
+    #plot.margin = unit(c(1, 1, 1, 4), "lines"),
+        axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.position="none")  +
+#  facet_wrap(~ Factor) 
+  coord_flip()+
+
+
+
+  xlab("Standardized coefficients (β)") +
+  ylab("Predictors")+
+
+  ggtitle("Factor 3")
+
+plotCFAFac3
+```
+
+combine all plots
+```{r plot test ignore for now, echo=FALSE, fig.height=5, fig.width=20}
+library(ggpubr) #to create panels
+library(ggthemes)
+
+piecepanel_Aesthetic<-ggarrange(plotCFAFac1, plotCFAFac2, plotCFAFac3, 
+                               # labels=c(),
+                                ncol=3, nrow = 1)                          
+piecepanel_Aesthetic
+
+#piecepanel_Aesthetic<-ggarrange(plotEFA_Fac1, plotEFA_Fac2,plotEFA_Fac3,plotEFA_Fac4,plotEFA_Fac5,plotEFA_Fac6,plotEFA_Fac7,
+                      #labels = c("Music: sad", "Music: happy"),
+ #                     ncol = 3, nrow = 3)
+
+```
+
+
+
+
+```{r hierarchical linear model for Happy, eval=FALSE, include=FALSE}
+Model_BASIC_HAPPY<-lmer(Z_basic_happiness~
+                            Z_Neutral_FaceMeanDIV+  
+                            Z_Happy_FaceMeanDIV+
+                        #    Z_Sadness_FaceMeanDIV+  #
+                            Z_Anger_FaceMeanDIV+     
+                            Z_Surprise_FaceMeanDIV+ 
+                            Z_Fear_FaceMeanDIV+ 
+                            Z_Disgust_FaceMeanDIV +  
+                            
+                            Z_meanAccelB+
+                       #     Z_meangsrB+     #
+                            Z_meanSUM_N_IncAB+ 
+                            Z_meanSUM_IncAB+      
+                        #    Z_meanbvpRateB+ #
+                        #    Z_meanbvpAmpB+  #
+                            
+                          (1|ID), data=ZnewFA_data, REML = FALSE)
+
+Model_BASIC_HAPPY.fit<-summary(Model_BASIC_HAPPY)
+#happiness_tab<-full_join(happiness[1:2, ], happiness[4:11, ])
+Model_BASIC_HAPPY.confidence<-as.data.frame(confint(Model_BASIC_HAPPY,method="Wald", level=0.95))
+nullmodel_happy<-lmer(Z_basic_happiness~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+
+summary(nullmodel_happy)
+nagelkerke(Model_BASIC_HAPPY, nullmodel_happy)
+
+
+lm_Happy_IndiDiff<-lmer(Z_basic_happiness~
+                     #  ZIRI_FS+
+                       ZIRI_EC+
+                      # ZIRI_PT+
+                       ZIRI_PD+
+                       ZTIPI_Agree+
+                      # ZTIPI_Open+
+                       ZTIPI_Extro+
+                     #  ZTIPI_Consc+
+                       ZTIPI_Stab+
+                       
+                   (1|ID), data=ZnewFA_data, REML = FALSE)
+
+lm_Happy_IndiDiff.fit<-summary(lm_Happy_IndiDiff)
+lm_Happy_IndiDiff.confidence<-as.data.frame(confint(lm_Happy_IndiDiff,method="Wald", level=0.95))
+nullmodel_Happy_IndiDiff<-lmer(Z_basic_happiness~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+summary(nullmodel_Happy_IndiDiff)
+nagelkerke(lm_Happy_IndiDiff, nullmodel_Happy_IndiDiff)
+
+
+```
+
+
+Anova Happy
+
+```{r print ANOVA LMM Happy, eval=FALSE, include=FALSE}
+print(anova(Model_BASIC_HAPPY))
+```
+
+Model Summary Happy
+```{r print summary LMM Happy, eval=FALSE, include=FALSE}
+print(Model_BASIC_HAPPY.fit)
+```
+
+Confidence Intervals Happy
+```{r print confidence intervals Happy, eval=FALSE, include=FALSE}
+print(confint(Model_BASIC_HAPPY,method="Wald", level=0.95))
+
+```
+
+```{r hierarchical linear model for Sad, eval=FALSE, include=FALSE}
+
+Model_BASIC_SAD<-lmer(Z_basic_sadness~
+                          Z_Neutral_FaceMeanDIV+  
+                          Z_Happy_FaceMeanDIV+
+                          Z_Sadness_FaceMeanDIV+  
+                       #   Z_Anger_FaceMeanDIV+     #
+                          Z_Surprise_FaceMeanDIV+ 
+                          Z_Fear_FaceMeanDIV+ 
+                      #    Z_Disgust_FaceMeanDIV +  #
+                          
+                          Z_meanAccelB+
+                          Z_meangsrB+  
+                          Z_meanSUM_N_IncAB+ 
+                          Z_meanSUM_IncAB+      
+                      #    Z_meanbvpRateB+ #
+                          Z_meanbvpAmpB+  
+                        
+                        (1|ID), data=ZnewFA_data, REML = FALSE)
+
+Model_BASIC_SAD.fit<-summary(Model_BASIC_SAD)
+Model_BASIC_SAD.confidence<-as.data.frame(confint(Model_BASIC_SAD,method="Wald", level=0.95))
+
+
+nullmodel_sad<-lmer(Z_basic_sadness~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+
+summary(nullmodel_sad)
+nagelkerke(Model_BASIC_SAD, nullmodel_sad)
+
+
+
+
+lm_Sad_IndiDiff<-lmer(Z_basic_sadness~
+                       ZIRI_FS+
+                     #  ZIRI_EC+
+                    #   ZIRI_PT+
+                     #  ZIRI_PD+
+                     #  ZTIPI_Agree+
+                      # ZTIPI_Open+
+                      # ZTIPI_Extro+
+                      # ZTIPI_Consc+
+                     #  ZTIPI_Stab+
+                       
+                   (1|ID), data=ZnewFA_data, REML = FALSE)
+
+lm_Sad_IndiDiff.fit<-summary(lm_Sad_IndiDiff)
+lm_Sad_IndiDiff.confidence<-as.data.frame(confint(lm_Sad_IndiDiff,method="Wald", level=0.95))
+nullmodel_Sad_IndiDiff<-lmer(Z_basic_sadness~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+summary(nullmodel_Sad_IndiDiff)
+nagelkerke(lm_Sad_IndiDiff, nullmodel_Sad_IndiDiff)
+
+```
+
+Anova Sad
+```{r print ANOVA LMM Sad, eval=FALSE, include=FALSE}
+print(anova(Model_BASIC_SAD))
+```
+
+Model Summary Sad
+```{r print summary LMM Sad, eval=FALSE, include=FALSE}
+print(Model_BASIC_SAD.fit)
+```
+
+Confidence Intervals Sad
+```{r print confidence intervals Sad, eval=FALSE, include=FALSE}
+print(confint(Model_BASIC_SAD,method="Wald", level=0.95))
+
+```
+
+```{r hierarchical linear model for Anger, eval=FALSE, include=FALSE}
+
+Model_BASIC_ANGER<-lmer(Z_basic_anger~
+                          Z_Neutral_FaceMeanDIV+  
+                       #   Z_Happy_FaceMeanDIV+  #
+                          Z_Sadness_FaceMeanDIV+  
+                          Z_Anger_FaceMeanDIV+     
+                      #    Z_Surprise_FaceMeanDIV+ #
+                      #    Z_Fear_FaceMeanDIV+ #
+                      #    Z_Disgust_FaceMeanDIV + #  
+                          
+                          Z_meanAccelB+
+                          Z_meangsrB+     
+                          Z_meanSUM_N_IncAB+ 
+                        #  Z_meanSUM_IncAB+      #
+                        #  Z_meanbvpRateB+ #
+                        #  Z_meanbvpAmpB+  #
+                          
+                        (1|ID), data=ZnewFA_data, REML = FALSE)
+
+
+Model_BASIC_ANGER.fit<-summary(Model_BASIC_ANGER)
+Model_BASIC_ANGER.confidence<-as.data.frame(confint(Model_BASIC_ANGER,method="Wald", level=0.95))
+
+nullmodel_anger<-lmer(Z_basic_anger~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+
+summary(nullmodel_anger)
+nagelkerke(Model_BASIC_ANGER, nullmodel_anger)
+
+
+
+
+lm_Anger_IndiDiff<-lmer(Z_basic_anger~
+                       ZIRI_FS+
+                     #  ZIRI_EC+
+                       ZIRI_PT+
+                     #  ZIRI_PD+
+                       ZTIPI_Agree+
+                    #   ZTIPI_Open+
+                     #  ZTIPI_Extro+
+                       ZTIPI_Consc+
+                       ZTIPI_Stab+
+                       
+                   (1|ID), data=ZnewFA_data, REML = FALSE)
+
+lm_Anger_IndiDiff.fit<-summary(lm_Anger_IndiDiff)
+lm_Anger_IndiDiff.confidence<-as.data.frame(confint(lm_Anger_IndiDiff,method="Wald", level=0.95))
+nullmodel_Anger_IndiDiff<-lmer(Z_basic_anger~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+summary(nullmodel_Anger_IndiDiff)
+nagelkerke(lm_Anger_IndiDiff, nullmodel_Anger_IndiDiff)
+
+```
+
+
+Anova Anger
+```{r print ANOVA LMM Anger, eval=FALSE, include=FALSE}
+print(anova(Model_BASIC_ANGER))
+```
+
+Model Summary Anger
+```{r print summary LMM Anger, eval=FALSE, include=FALSE}
+print(Model_BASIC_ANGER.fit)
+```
+
+Confidence Intervals Anger
+```{r print confidence intervals Anger, eval=FALSE, include=FALSE}
+print(confint(Model_BASIC_ANGER,method="Wald", level=0.95))
+
+```
+
+```{r hierarchical linear model for Surprise, eval=FALSE, include=FALSE}
+Model_BASIC_SURPRISE<-lmer(Z_basic_surprise~
+                     #     Z_Neutral_FaceMeanDIV+  #
+                          Z_Happy_FaceMeanDIV+
+                          Z_Sadness_FaceMeanDIV+  
+                          Z_Anger_FaceMeanDIV+     
+                    #      Z_Surprise_FaceMeanDIV+ #
+                          Z_Fear_FaceMeanDIV+ 
+                    #      Z_Disgust_FaceMeanDIV +  #
+                         
+                    #      Z_meanAccelB+ #
+                          Z_meangsrB+     
+                    #      Z_meanSUM_N_IncAB+ #
+                    #      Z_meanSUM_IncAB+    #  
+                          Z_meanbvpRateB+ 
+                    #      Z_meanbvpAmpB+  #
+                        
+                        (1|ID), data=ZnewFA_data, REML = FALSE)
+
+Model_BASIC_SURPRISE.fit<-summary(Model_BASIC_SURPRISE)
+Model_BASIC_SURPRISE.confidence<-as.data.frame(confint(Model_BASIC_SURPRISE,method="Wald", level=0.95))
+
+nullmodel_surprise<-lmer(Z_basic_surprise~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+
+summary(nullmodel_surprise)
+nagelkerke(Model_BASIC_SURPRISE, nullmodel_surprise)
+
+
+
+
+lm_Surprise_IndiDiff<-lmer(Z_basic_surprise~
+                       ZIRI_FS+
+                  #     ZIRI_EC+
+                       ZIRI_PT+
+                   #    ZIRI_PD+
+                  #     ZTIPI_Agree+
+                   #    ZTIPI_Open+
+                  #     ZTIPI_Extro+
+                       ZTIPI_Consc+
+                    #   ZTIPI_Stab+
+                       
+                   (1|ID), data=ZnewFA_data, REML = FALSE)
+
+lm_Surprise_IndiDiff.fit<-summary(lm_Surprise_IndiDiff)
+lm_Surprise_IndiDiff.confidence<-as.data.frame(confint(lm_Surprise_IndiDiff,method="Wald", level=0.95))
+nullmodel_Surprise_IndiDiff<-lmer(Z_basic_surprise~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+summary(nullmodel_Surprise_IndiDiff)
+nagelkerke(lm_Surprise_IndiDiff, nullmodel_Surprise_IndiDiff)
+```
+
+
+Anova Surprise
+```{r print ANOVA LMM Surprise, eval=FALSE, include=FALSE}
+print(anova(Model_BASIC_SURPRISE))
+```
+
+Model Summary Surprise
+```{r print summary LMM Surprise, eval=FALSE, include=FALSE}
+print(Model_BASIC_SURPRISE.fit)
+```
+
+Confidence Intervals Surprise
+```{r print confidence intervals Surprise, eval=FALSE, include=FALSE}
+print(confint(Model_BASIC_SURPRISE,method="Wald", level=0.95))
+
+```
+
+
+```{r hierarchical linear model for Fear, eval=FALSE, include=FALSE}
+
+Model_BASIC_FEAR<-lmer(Z_basic_fear~
+                          Z_Neutral_FaceMeanDIV+  
+                       #   Z_Happy_FaceMeanDIV+   #
+                          Z_Sadness_FaceMeanDIV+  
+                          Z_Anger_FaceMeanDIV+     
+                      #    Z_Surprise_FaceMeanDIV+   # 
+                      #    Z_Fear_FaceMeanDIV+  #
+                          Z_Disgust_FaceMeanDIV +  
+                          
+                          Z_meanAccelB+
+                    #      Z_meangsrB+     
+                          Z_meanSUM_N_IncAB+ 
+                     #     Z_meanSUM_IncAB+      #
+                        #  Z_meanbvpRateB+ #
+                          Z_meanbvpAmpB+  #
+                          
+                        (1|ID), data=ZnewFA_data, REML = FALSE)
+
+
+Model_BASIC_FEAR.fit<-summary(Model_BASIC_FEAR)
+Model_BASIC_FEAR.confidence<-as.data.frame(confint(Model_BASIC_FEAR,method="Wald", level=0.95))
+nullmodel_fear<-lmer(Z_basic_fear~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+
+summary(nullmodel_fear)
+nagelkerke(Model_BASIC_FEAR, nullmodel_fear)
+
+```
+
+
+Anova Fear
+```{r print ANOVA LMM Fear, eval=FALSE, include=FALSE}
+print(anova(Model_BASIC_FEAR))
+```
+
+Model Summary Fear
+```{r print summary LMM Fear, eval=FALSE, include=FALSE}
+print(Model_BASIC_FEAR.fit)
+```
+
+Confidence Intervals Fear
+```{r print confidence intervals Fear, eval=FALSE, include=FALSE}
+print(confint(Model_BASIC_FEAR,method="Wald", level=0.95))
+
+```
+```{r hierarchical linear model for Disgust, eval=FALSE, include=FALSE}
+
+Model_BASIC_DISGUST<-lmer(Z_basic_disgust~
+                          Z_Neutral_FaceMeanDIV+  
+                       #   Z_Happy_FaceMeanDIV+  #
+                          Z_Sadness_FaceMeanDIV+  
+                          Z_Anger_FaceMeanDIV+     
+                        #  Z_Surprise_FaceMeanDIV+ #
+                          Z_Fear_FaceMeanDIV+ 
+                        #  Z_Disgust_FaceMeanDIV +  #
+                         
+                          Z_meanAccelB+
+                        #  Z_meangsrB+     #
+                          Z_meanSUM_N_IncAB+ 
+                        #  Z_meanSUM_IncAB+    #  
+                        #  Z_meanbvpRateB+    #
+                        #  Z_meanbvpAmpB+  #
+                          
+                        (1|ID), data=ZnewFA_data, REML = FALSE)
+
+Model_BASIC_DISGUST.fit<-summary(Model_BASIC_DISGUST)
+Model_BASIC_DISGUST.confidence<-as.data.frame(confint(Model_BASIC_DISGUST,method="Wald", level=0.95))
+nullmodel_disgust<-lmer(Z_basic_disgust~1 + (1|ID), data=ZnewFA_data, REML = FALSE)
+
+summary(nullmodel_disgust)
+nagelkerke(Model_BASIC_DISGUST, nullmodel_disgust)
+```
+Anova Disgust
+```{r print ANOVA LMM Disgust, eval=FALSE, include=FALSE}
+print(anova(Model_BASIC_DISGUST))
+```
+Model Summary Disgust
+```{r print summary LMM Disgust, eval=FALSE, include=FALSE}
+print(Model_BASIC_DISGUST.fit)
+```
+
+Confidence Intervals Disgust
+```{r print confidence intervals Disgust, eval=FALSE, include=FALSE}
+print(confint(Model_BASIC_DISGUST,method="Wald", level=0.95))
+
+```
+
+```{r ignore for now new df with coefficients etc for plotting Happy, eval=FALSE, include=FALSE}
+df_Happy.coefficients<-as.data.frame(Model_BASIC_HAPPY.fit$coefficients)
+
+df_Happy<-data.frame("dp"=c("Basic Happy"), 
+                  
+                  "predictor"= c("13 FE Neutral", "12 FE Happy", "11 FE Sadness", "10 FE Anger", "09 FE Surprise", "08 FE Fear", "07 FE Disgust", "06 Movement", "05 SCL", "04 SCR count", "03 SCR amplitude", "02 BVP rate", "01 BVP amplitude"),
+                  
+                  "beta"=c(
+                    df_Happy.coefficients$Estimate[2],
+                    df_Happy.coefficients$Estimate[3],
+                    0,
+                    df_Happy.coefficients$Estimate[4],
+                    df_Happy.coefficients$Estimate[5],
+                    df_Happy.coefficients$Estimate[6],
+                    df_Happy.coefficients$Estimate[7],
+                    df_Happy.coefficients$Estimate[8],
+                    0,
+                    df_Happy.coefficients$Estimate[9],
+                    df_Happy.coefficients$Estimate[10],
+                    0,
+                    0),
+                  
+                              "CIlower"=c(
+                                Model_BASIC_HAPPY.confidence$`2.5 %`[4],
+                                Model_BASIC_HAPPY.confidence$`2.5 %`[5],
+                                0,
+                                Model_BASIC_HAPPY.confidence$`2.5 %`[6],
+                                Model_BASIC_HAPPY.confidence$`2.5 %`[7],
+                                Model_BASIC_HAPPY.confidence$`2.5 %`[8],
+                                Model_BASIC_HAPPY.confidence$`2.5 %`[9],
+                                Model_BASIC_HAPPY.confidence$`2.5 %`[10],
+                                0,
+                                Model_BASIC_HAPPY.confidence$`2.5 %`[11],
+                                Model_BASIC_HAPPY.confidence$`2.5 %`[12],
+                                0,
+                                0),
+                  
+                  "CIupper"=c(
+                    Model_BASIC_HAPPY.confidence$`97.5 %`[4],
+                    Model_BASIC_HAPPY.confidence$`97.5 %`[5],
+                    0,
+                    Model_BASIC_HAPPY.confidence$`97.5 %`[6],
+                    Model_BASIC_HAPPY.confidence$`97.5 %`[7],
+                    Model_BASIC_HAPPY.confidence$`97.5 %`[8],
+                    Model_BASIC_HAPPY.confidence$`97.5 %`[9],
+                    Model_BASIC_HAPPY.confidence$`97.5 %`[10],
+                    0,
+                    Model_BASIC_HAPPY.confidence$`97.5 %`[11],
+                    Model_BASIC_HAPPY.confidence$`97.5 %`[12],
+                    0,
+                    0),
+                  
+                  "SE"=c(df_Happy.coefficients$`Std. Error`[2],
+                         df_Happy.coefficients$`Std. Error`[3],
+                         0,
+                         df_Happy.coefficients$`Std. Error`[4],
+                         df_Happy.coefficients$`Std. Error`[5],
+                         df_Happy.coefficients$`Std. Error`[6],
+                         df_Happy.coefficients$`Std. Error`[7],
+                         df_Happy.coefficients$`Std. Error`[8],
+                         0,
+                         df_Happy.coefficients$`Std. Error`[9],
+                         df_Happy.coefficients$`Std. Error`[10],
+                         0,
+                         0),
+                  
+                  "df"=c(
+                    df_Happy.coefficients$df[2],
+                    df_Happy.coefficients$df[3],
+                    0,
+                    df_Happy.coefficients$df[4], 
+                    df_Happy.coefficients$df[5], 
+                    df_Happy.coefficients$df[6], 
+                    df_Happy.coefficients$df[7],
+                    df_Happy.coefficients$df[8],
+                    0,
+                    df_Happy.coefficients$df[9],
+                    df_Happy.coefficients$df[10],
+                    0,
+                    0),
+                  
+                  "tvalue" = c(
+                    df_Happy.coefficients$`t value`[2], 
+                    df_Happy.coefficients$`t value`[3],
+                    0,
+                    df_Happy.coefficients$`t value`[4], 
+                    df_Happy.coefficients$`t value`[5], 
+                    df_Happy.coefficients$`t value`[6], 
+                    df_Happy.coefficients$`t value`[7],
+                    df_Happy.coefficients$`t value`[8],
+                    0,
+                    df_Happy.coefficients$`t value`[9],
+                    df_Happy.coefficients$`t value`[10],
+                    0,
+                    0),
+                  "p" =c(
+                    df_Happy.coefficients$`Pr(>|t|)`[2],
+                    df_Happy.coefficients$`Pr(>|t|)`[3],
+                    0,
+                    df_Happy.coefficients$`Pr(>|t|)`[4],
+                    df_Happy.coefficients$`Pr(>|t|)`[5],
+                    df_Happy.coefficients$`Pr(>|t|)`[6],
+                    df_Happy.coefficients$`Pr(>|t|)`[7],
+                    df_Happy.coefficients$`Pr(>|t|)`[8],
+                    0,
+                    df_Happy.coefficients$`Pr(>|t|)`[9],
+                    df_Happy.coefficients$`Pr(>|t|)`[10],
+                    0,
+                    0)
+                  )
+
+```
+```{r plot Happy, eval=FALSE, include=FALSE}
+################################
+# Happy
+
+data=df_Happy
+x=df_Happy$predictor
+y=df_Happy$beta
+lower=df_Happy$CIlower
+upper=df_Happy$CIupper
+
+plotHappy<- ggplot(data=data, aes(x = x, y = y, ymin=lower,
+                   ymax=upper)) + 
+ geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+#  geom_hline(yintercept = 1, linetype = 2) +
+#  scale_y_log10() + ### This is the line that makes the transfomation
+  theme_bw() + 
+  theme(
+    #plot.margin = unit(c(1, 1, 1, 4), "lines"),
+        axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.position="none")  +
+#  facet_wrap(~ Factor) 
+  coord_flip()+
+
+  xlab("Standardized coefficients (β)") +
+  ylab("Predictors")+
+
+  ggtitle("Happy")
+
+
+plotHappy
+
+```
+```{r ignore for now new df with coefficients etc for plotting Sad, eval=FALSE, include=FALSE}
+df_Sad.coefficients<-as.data.frame(Model_BASIC_SAD.fit$coefficients)
+
+df_Sad<-data.frame("dp"=c("Basic Sad"), 
+                  
+                  "predictor"= c("13 FE Neutral", "12 FE Happy", "11 FE Sadness", "10 FE Anger", "09 FE Surprise", "08 FE Fear", "07 FE Disgust", "06 Movement", "05 SCL", "04 SCR count", "03 SCR amplitude", "02 BVP rate", "01 BVP amplitude"),
+                  
+                  "beta"=c(df_Sad.coefficients$Estimate[2], 
+                           df_Sad.coefficients$Estimate[3],
+                           df_Sad.coefficients$Estimate[4],
+                           0,
+                           df_Sad.coefficients$Estimate[5],
+                           df_Sad.coefficients$Estimate[6],
+                           0,
+                           df_Sad.coefficients$Estimate[7],
+                           df_Sad.coefficients$Estimate[8],
+                           df_Sad.coefficients$Estimate[9],
+                           df_Sad.coefficients$Estimate[10],
+                           0,
+                           df_Sad.coefficients$Estimate[11]),
+                  
+                              "CIlower"=c(
+                                Model_BASIC_SAD.confidence$`2.5 %`[4],
+                                Model_BASIC_SAD.confidence$`2.5 %`[5],
+                                Model_BASIC_SAD.confidence$`2.5 %`[6],
+                                0,
+                                Model_BASIC_SAD.confidence$`2.5 %`[7],
+                                Model_BASIC_SAD.confidence$`2.5 %`[8],
+                                0,
+                                Model_BASIC_SAD.confidence$`2.5 %`[9],
+                                Model_BASIC_SAD.confidence$`2.5 %`[10],
+                                Model_BASIC_SAD.confidence$`2.5 %`[11],
+                                Model_BASIC_SAD.confidence$`2.5 %`[12],
+                                0,
+                                Model_BASIC_SAD.confidence$`2.5 %`[13]),
+                  
+                  "CIupper"=c(
+                    Model_BASIC_SAD.confidence$`97.5 %`[4],
+                    Model_BASIC_SAD.confidence$`97.5 %`[5],
+                    Model_BASIC_SAD.confidence$`97.5 %`[6],
+                    0,
+                    Model_BASIC_SAD.confidence$`97.5 %`[7],
+                    Model_BASIC_SAD.confidence$`97.5 %`[8],
+                    0,
+                    Model_BASIC_SAD.confidence$`97.5 %`[9],
+                    Model_BASIC_SAD.confidence$`97.5 %`[10],
+                    Model_BASIC_SAD.confidence$`97.5 %`[11],
+                    Model_BASIC_SAD.confidence$`97.5 %`[12],
+                    0,
+                    Model_BASIC_SAD.confidence$`97.5 %`[13]),
+                  
+                  "SE"=c(df_Sad.coefficients$`Std. Error`[2],
+                         df_Sad.coefficients$`Std. Error`[3],
+                         df_Sad.coefficients$`Std. Error`[4],
+                         0,
+                         df_Sad.coefficients$`Std. Error`[5],
+                         df_Sad.coefficients$`Std. Error`[6],
+                         0,
+                         df_Sad.coefficients$`Std. Error`[7],
+                         df_Sad.coefficients$`Std. Error`[8],
+                         df_Sad.coefficients$`Std. Error`[9],
+                         df_Sad.coefficients$`Std. Error`[10],
+                         0,
+                         df_Sad.coefficients$`Std. Error`[11]),
+                  
+                  "df"=c(
+                    df_Sad.coefficients$df[2], 
+                    df_Sad.coefficients$df[3],
+                    df_Sad.coefficients$df[4],
+                    0, 
+                    df_Sad.coefficients$df[5],
+                    df_Sad.coefficients$df[6],
+                    0,
+                    df_Sad.coefficients$df[7],
+                    df_Sad.coefficients$df[8],
+                    df_Sad.coefficients$df[9],
+                    df_Sad.coefficients$df[10],
+                    0,
+                    df_Sad.coefficients$df[11]),
+                  
+                  "tvalue" = c(
+                    df_Sad.coefficients$`t value`[2],
+                    df_Sad.coefficients$`t value`[3],
+                    df_Sad.coefficients$`t value`[4],
+                    0,
+                    df_Sad.coefficients$`t value`[5], 
+                    df_Sad.coefficients$`t value`[6],
+                    0, 
+                    df_Sad.coefficients$`t value`[7],
+                    df_Sad.coefficients$`t value`[8],
+                    df_Sad.coefficients$`t value`[9],
+                    df_Sad.coefficients$`t value`[10],
+                    0,
+                    df_Sad.coefficients$`t value`[11]),
+                  
+                  "p" =c(df_Sad.coefficients$`Pr(>|t|)`[2],
+                         df_Sad.coefficients$`Pr(>|t|)`[3],
+                         df_Sad.coefficients$`Pr(>|t|)`[4],
+                         0,
+                         df_Sad.coefficients$`Pr(>|t|)`[5],
+                         df_Sad.coefficients$`Pr(>|t|)`[6],
+                         0,
+                         df_Sad.coefficients$`Pr(>|t|)`[7], 
+                         df_Sad.coefficients$`Pr(>|t|)`[8],
+                         df_Sad.coefficients$`Pr(>|t|)`[9],
+                         df_Sad.coefficients$`Pr(>|t|)`[10],
+                         0,
+                         df_Sad.coefficients$`Pr(>|t|)`[11])
+                  )
+
+```
+```{r plot sad, eval=FALSE, include=FALSE}
+
+###########################################
+# Sad
+
+data=df_Sad
+x=df_Sad$predictor
+y=df_Sad$beta
+lower=df_Sad$CIlower
+upper=df_Sad$CIupper
+
+plotSad<- ggplot(data=data, aes(x = x, y = y, ymin=lower,
+                   ymax=upper)) + 
+ geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+#  geom_hline(yintercept = 1, linetype = 2) +
+#  scale_y_log10() + ### This is the line that makes the transfomation
+  theme_bw() + 
+  theme(
+    #plot.margin = unit(c(1, 1, 1, 4), "lines"),
+        axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.position="none")  +
+#  facet_wrap(~ Factor) 
+  coord_flip()+
+
+  xlab("Standardized coefficients (β)") +
+  ylab("Predictors")+
+
+  ggtitle("Sad")
+
+
+plotSad
+
+```
+```{r ignore for now new df with coefficients etc for plotting Anger, eval=FALSE, include=FALSE}
+df_Anger.coefficients<-as.data.frame(Model_BASIC_ANGER.fit$coefficients)
+
+df_Anger<-data.frame("dp"=c("Basic Anger"), 
+                  
+                  "predictor"= c("13 FE Neutral", "12 FE Happy", "11 FE Sadness", "10 FE Anger", "09 FE Surprise", "08 FE Fear", "07 FE Disgust", "06 Movement", "05 SCL", "04 SCR count", "03 SCR amplitude", "02 BVP rate", "01 BVP amplitude"),
+                  
+                  "beta"=c(
+                    df_Anger.coefficients$Estimate[2],
+                    0,
+                    df_Anger.coefficients$Estimate[3],
+                    df_Anger.coefficients$Estimate[4],
+                    0,
+                    0,
+                    0, 
+                    df_Anger.coefficients$Estimate[5],
+                    df_Anger.coefficients$Estimate[6],
+                    df_Anger.coefficients$Estimate[7], 
+                    0,
+                    0,
+                    0),
+                  
+                              "CIlower"=c(
+                                Model_BASIC_ANGER.confidence$`2.5 %`[4],
+                                0,
+                                Model_BASIC_ANGER.confidence$`2.5 %`[5],
+                                Model_BASIC_ANGER.confidence$`2.5 %`[6],
+                                0,
+                                0,
+                                0,
+                                Model_BASIC_ANGER.confidence$`2.5 %`[7],
+                                Model_BASIC_ANGER.confidence$`2.5 %`[8],
+                                Model_BASIC_ANGER.confidence$`2.5 %`[9],
+                                0,
+                                0,
+                                0),
+                  
+                  "CIupper"=c(Model_BASIC_ANGER.confidence$`97.5 %`[4],
+                              0,
+                              Model_BASIC_ANGER.confidence$`97.5 %`[5],
+                              Model_BASIC_ANGER.confidence$`97.5 %`[6],
+                              0,
+                              0,
+                              0,
+                              Model_BASIC_ANGER.confidence$`97.5 %`[7],
+                              Model_BASIC_ANGER.confidence$`97.5 %`[8],
+                              Model_BASIC_ANGER.confidence$`97.5 %`[9],
+                              0,
+                              0,
+                              0),
+                  "SE"=c(df_Anger.coefficients$`Std. Error`[2],
+                         0,
+                         df_Anger.coefficients$`Std. Error`[3],
+                         df_Anger.coefficients$`Std. Error`[4],
+                         0,
+                         0,
+                         0,
+                         df_Anger.coefficients$`Std. Error`[5],
+                         df_Anger.coefficients$`Std. Error`[6],
+                         df_Anger.coefficients$`Std. Error`[7],
+                         0,
+                         0,
+                         0),
+                  
+                  "df"=c(df_Anger.coefficients$df[2], 
+                         0,
+                         df_Anger.coefficients$df[3],
+                         df_Anger.coefficients$df[4],
+                         0,
+                         0,
+                         0,
+                         df_Anger.coefficients$df[5],
+                         df_Anger.coefficients$df[6],
+                         df_Anger.coefficients$df[7],
+                         0,
+                         0,
+                         0),
+                  
+                  "tvalue" = c(
+                    df_Anger.coefficients$`t value`[2],
+                    0, 
+                    df_Anger.coefficients$`t value`[3],
+                    df_Anger.coefficients$`t value`[4],
+                    0,
+                    0,
+                    0,
+                    df_Anger.coefficients$`t value`[5], 
+                    df_Anger.coefficients$`t value`[6],
+                    df_Anger.coefficients$`t value`[7], 
+                    0,
+                    0,
+                    0),
+                  
+                  "p" =c(
+                    df_Anger.coefficients$`Pr(>|t|)`[2],
+                    0,
+                    df_Anger.coefficients$`Pr(>|t|)`[3],
+                    df_Anger.coefficients$`Pr(>|t|)`[4],
+                    0,
+                    0,
+                    0,
+                    df_Anger.coefficients$`Pr(>|t|)`[5],
+                    df_Anger.coefficients$`Pr(>|t|)`[6],
+                    df_Anger.coefficients$`Pr(>|t|)`[7],
+                    0,
+                    0,
+                    0)
+                  )
+
+```
+```{r plot Anger, eval=FALSE, include=FALSE}
+#########################################
+# Anger
+
+data=df_Anger
+x=df_Anger$predictor
+y=df_Anger$beta
+lower=df_Anger$CIlower
+upper=df_Anger$CIupper
+
+plotAnger<- ggplot(data=data, aes(x = x, y = y, ymin=lower,
+                   ymax=upper)) + 
+ geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+#  geom_hline(yintercept = 1, linetype = 2) +
+#  scale_y_log10() + ### This is the line that makes the transfomation
+  theme_bw() + 
+  theme(
+    #plot.margin = unit(c(1, 1, 1, 4), "lines"),
+        axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.position="none")  +
+#  facet_wrap(~ Factor) 
+  coord_flip()+
+
+  xlab("Standardized coefficients (β)") +
+  ylab("Predictors")+
+
+  ggtitle("Anger")
+
+
+plotAnger
+
+```
+```{r ignore for now new df with coefficients etc for plotting Surprise, eval=FALSE, include=FALSE}
+df_Surprise.coefficients<-as.data.frame(Model_BASIC_SURPRISE.fit$coefficients)
+
+df_Surprise<-data.frame("dp"=c("Basic Surprise"), 
+                  
+                  "predictor"= c("13 FE Neutral", "12 FE Happy", "11 FE Sadness", "10 FE Anger", "09 FE Surprise", "08 FE Fear", "07 FE Disgust", "06 Movement", "05 SCL", "04 SCR count", "03 SCR amplitude", "02 BVP rate", "01 BVP amplitude"),
+                  
+                  "beta"=c(
+                    0,
+                    df_Surprise.coefficients$Estimate[2],
+                    df_Surprise.coefficients$Estimate[3],
+                    df_Surprise.coefficients$Estimate[4],
+                    0,
+                    df_Surprise.coefficients$Estimate[5],
+                    0,
+                    0,
+                    df_Surprise.coefficients$Estimate[6],
+                    0,
+                    0,
+                    df_Surprise.coefficients$Estimate[7],
+                    0),
+                  
+                              "CIlower"=c(
+                                0,
+                                Model_BASIC_SURPRISE.confidence$`2.5 %`[4],
+                                Model_BASIC_SURPRISE.confidence$`2.5 %`[5],
+                                Model_BASIC_SURPRISE.confidence$`2.5 %`[6],
+                                0,Model_BASIC_SURPRISE.confidence$`2.5 %`[7],
+                                0,
+                                0,
+                                Model_BASIC_SURPRISE.confidence$`2.5 %`[8],
+                                0,
+                                0,
+                                Model_BASIC_SURPRISE.confidence$`2.5 %`[9],
+                                0),
+                  "CIupper"=c(
+                    0,
+                    Model_BASIC_SURPRISE.confidence$`97.5 %`[4],
+                    Model_BASIC_SURPRISE.confidence$`97.5 %`[5],
+                    Model_BASIC_SURPRISE.confidence$`97.5 %`[6],
+                    0,
+                    Model_BASIC_SURPRISE.confidence$`97.5 %`[7],
+                    0,
+                    0,
+                    Model_BASIC_SURPRISE.confidence$`97.5 %`[8],
+                    0,
+                    0,
+                    Model_BASIC_SURPRISE.confidence$`97.5 %`[9],
+                    0),
+                  
+                  "SE"=c(
+                    0,
+                    df_Surprise.coefficients$`Std. Error`[2],
+                    df_Surprise.coefficients$`Std. Error`[3],
+                    df_Surprise.coefficients$`Std. Error`[4],
+                    0,
+                    df_Surprise.coefficients$`Std. Error`[5],
+                    0,
+                    0,
+                    df_Surprise.coefficients$`Std. Error`[6],
+                    0,
+                    0,
+                    df_Surprise.coefficients$`Std. Error`[7],
+                    0),
+                  
+                  "df"=c(0,
+                         df_Surprise.coefficients$df[2], 
+                         df_Surprise.coefficients$df[3],
+                         df_Surprise.coefficients$df[4],
+                         0,
+                         df_Surprise.coefficients$df[5],
+                         0,
+                         0,
+                         df_Surprise.coefficients$df[6],
+                         0,
+                         0,
+                         df_Surprise.coefficients$df[7],
+                         0),
+                  
+                  "tvalue" = c(
+                    0,
+                    df_Surprise.coefficients$`t value`[2],
+                    df_Surprise.coefficients$`t value`[3],
+                    df_Surprise.coefficients$`t value`[4],
+                    0,
+                    df_Surprise.coefficients$`t value`[5],
+                    0,
+                    0,
+                    df_Surprise.coefficients$`t value`[6],
+                    0,
+                    0,
+                    df_Surprise.coefficients$`t value`[7],
+                    0),
+                  
+                  "p" =c(
+                    0,
+                    df_Surprise.coefficients$`Pr(>|t|)`[2], 
+                    df_Surprise.coefficients$`Pr(>|t|)`[3],
+                    df_Surprise.coefficients$`Pr(>|t|)`[4],
+                    0,
+                    df_Surprise.coefficients$`Pr(>|t|)`[5],
+                    0,
+                    0,
+                    df_Surprise.coefficients$`Pr(>|t|)`[6],
+                    0,
+                    0,
+                    df_Surprise.coefficients$`Pr(>|t|)`[7],
+                    0)
+                  )
+
+```
+```{r Plot surprise, eval=FALSE, include=FALSE}
+#############################################
+# Surprise
+
+data=df_Surprise
+x=df_Surprise$predictor
+y=df_Surprise$beta
+lower=df_Surprise$CIlower
+upper=df_Surprise$CIupper
+
+plotSurprise<- ggplot(data=data, aes(x = x, y = y, ymin=lower,
+                   ymax=upper)) + 
+ geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+#  geom_hline(yintercept = 1, linetype = 2) +
+#  scale_y_log10() + ### This is the line that makes the transfomation
+  theme_bw() + 
+  theme(
+    #plot.margin = unit(c(1, 1, 1, 4), "lines"),
+        axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.position="none")  +
+#  facet_wrap(~ Factor) 
+  coord_flip()+
+
+  xlab("Standardized coefficients (β)") +
+  ylab("Predictors")+
+
+  ggtitle("Surprise")
+
+
+plotSurprise
+```
+```{r ignore for now new df with coefficients etc for plotting Fear, eval=FALSE, include=FALSE}
+df_Fear.coefficients<-as.data.frame(Model_BASIC_FEAR.fit$coefficients)
+
+df_Fear<-data.frame("dp"=c("Basic Fear"), 
+                  
+                  "predictor"= c("13 FE Neutral", "12 FE Happy", "11 FE Sadness", "10 FE Anger", "09 FE Surprise", "08 FE Fear", "07 FE Disgust", "06 Movement", "05 SCL", "04 SCR count", "03 SCR amplitude", "02 BVP rate", "01 BVP amplitude"),
+                  
+                  "beta"=c(df_Fear.coefficients$Estimate[2],
+                           0,
+                           df_Fear.coefficients$Estimate[3],
+                           df_Fear.coefficients$Estimate[4],
+                           0,
+                           0,
+                           df_Fear.coefficients$Estimate[5],
+                           df_Fear.coefficients$Estimate[6],
+                           0,
+                           df_Fear.coefficients$Estimate[7], 
+                           0,
+                           0,
+                           df_Fear.coefficients$Estimate[8]),
+                  
+                              "CIlower"=c(
+                                Model_BASIC_FEAR.confidence$`2.5 %`[4],
+                                0,
+                                Model_BASIC_FEAR.confidence$`2.5 %`[5],
+                                Model_BASIC_FEAR.confidence$`2.5 %`[6],
+                                0,
+                                0,
+                                Model_BASIC_FEAR.confidence$`2.5 %`[7],
+                                Model_BASIC_FEAR.confidence$`2.5 %`[8],
+                                0,
+                                Model_BASIC_FEAR.confidence$`2.5 %`[9],
+                                0,
+                                0,
+                                Model_BASIC_FEAR.confidence$`2.5 %`[10]),
+                  
+                  "CIupper"=c(Model_BASIC_FEAR.confidence$`97.5 %`[4],
+                              0,
+                              Model_BASIC_FEAR.confidence$`97.5 %`[5],
+                              Model_BASIC_FEAR.confidence$`97.5 %`[6],
+                              0,
+                              0,
+                              Model_BASIC_FEAR.confidence$`97.5 %`[7],
+                              Model_BASIC_FEAR.confidence$`97.5 %`[8],
+                              0,
+                              Model_BASIC_FEAR.confidence$`97.5 %`[9],
+                              0,
+                              0,
+                              Model_BASIC_FEAR.confidence$`97.5 %`[10]),
+                  
+                  "SE"=c(df_Fear.coefficients$`Std. Error`[2],
+                         0,
+                         df_Fear.coefficients$`Std. Error`[3],
+                         df_Fear.coefficients$`Std. Error`[4],
+                         0,
+                         0,
+                         df_Fear.coefficients$`Std. Error`[5],
+                         df_Fear.coefficients$`Std. Error`[6],
+                         0,
+                         df_Fear.coefficients$`Std. Error`[7],
+                         0,
+                         0,
+                         df_Fear.coefficients$`Std. Error`[8]),
+                  
+                  "df"=c(
+                    df_Fear.coefficients$df[2],
+                    0,
+                    df_Fear.coefficients$df[3],
+                    df_Fear.coefficients$df[4],
+                    0,
+                    0,
+                    df_Fear.coefficients$df[5],
+                    df_Fear.coefficients$df[6],
+                    0,
+                    df_Fear.coefficients$df[7],
+                    0,
+                    0,
+                    df_Fear.coefficients$df[8]),
+                  
+                  "tvalue" = c(
+                    df_Fear.coefficients$`t value`[2],
+                    0,
+                    df_Fear.coefficients$`t value`[3],
+                    df_Fear.coefficients$`t value`[4],
+                    0,
+                    0,
+                    df_Fear.coefficients$`t value`[5], 
+                    df_Fear.coefficients$`t value`[6],
+                    0,
+                    df_Fear.coefficients$`t value`[7],
+                    0,
+                    0,
+                    df_Fear.coefficients$`t value`[8]),
+                  
+                  "p" =c(df_Fear.coefficients$`Pr(>|t|)`[2],
+                         0,
+                         df_Fear.coefficients$`Pr(>|t|)`[3],
+                         df_Fear.coefficients$`Pr(>|t|)`[4],
+                         0,
+                         0,
+                         df_Fear.coefficients$`Pr(>|t|)`[5],
+                         df_Fear.coefficients$`Pr(>|t|)`[6],
+                         0,
+                         df_Fear.coefficients$`Pr(>|t|)`[7], 
+                         0,
+                         0,
+                         df_Fear.coefficients$`Pr(>|t|)`[8])
+                  )
+
+```
+```{r plot Fear, eval=FALSE, include=FALSE}
+#############################################
+# Fear
+
+data=df_Fear
+x=df_Fear$predictor
+y=df_Fear$beta
+lower=df_Fear$CIlower
+upper=df_Fear$CIupper
+
+plotFear<- ggplot(data=data, aes(x = x, y = y, ymin=lower,
+                   ymax=upper)) + 
+ geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+#  geom_hline(yintercept = 1, linetype = 2) +
+#  scale_y_log10() + ### This is the line that makes the transfomation
+  theme_bw() + 
+  theme(
+    #plot.margin = unit(c(1, 1, 1, 4), "lines"),
+        axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.position="none")  +
+  ylim(-0.3,0.3)+
+#  facet_wrap(~ Factor) 
+  coord_flip()+
+
+  xlab("Standardized coefficients (β)") +
+  ylab("Predictors")+
+
+  ggtitle("Fear")
+
+
+plotFear
+```
+```{r ignore for now new df with coefficients etc for plotting Disgust, eval=FALSE, include=FALSE}
+df_Disgust.coefficients<-as.data.frame(Model_BASIC_DISGUST.fit$coefficients)
+
+df_Disgust<-data.frame("dp"=c("Basic Disgust"), 
+                  
+                  "predictor"= c("13 FE Neutral", "12 FE Happy", "11 FE Sadness", "10 FE Anger", "09 FE Surprise", "08 FE Fear", "07 FE Disgust", "06 Movement", "05 SCL", "04 SCR count", "03 SCR amplitude", "02 BVP rate", "01 BVP amplitude"),
+                  
+                  "beta"=c(
+                    df_Disgust.coefficients$Estimate[2],
+                    0,
+                    df_Disgust.coefficients$Estimate[3],
+                    df_Disgust.coefficients$Estimate[4],
+                    0,
+                    df_Disgust.coefficients$Estimate[5],
+                    0,
+                    df_Disgust.coefficients$Estimate[6],
+                    0,
+                    df_Disgust.coefficients$Estimate[7],
+                    0,
+                    0,
+                    0),
+                  
+            "CIlower"=c(
+              Model_BASIC_DISGUST.confidence$`2.5 %`[4],
+              0,
+              Model_BASIC_DISGUST.confidence$`2.5 %`[5],
+              Model_BASIC_DISGUST.confidence$`2.5 %`[6],
+              0,
+              Model_BASIC_DISGUST.confidence$`2.5 %`[7],
+              0,
+              Model_BASIC_DISGUST.confidence$`2.5 %`[8],
+              0,
+              Model_BASIC_DISGUST.confidence$`2.5 %`[9],
+              0,
+              0,
+              0),
+                  "CIupper"=c(Model_BASIC_DISGUST.confidence$`97.5 %`[4],
+                              0,
+                              Model_BASIC_DISGUST.confidence$`97.5 %`[5],
+                              Model_BASIC_DISGUST.confidence$`97.5 %`[6],
+                              0,
+                              Model_BASIC_DISGUST.confidence$`97.5 %`[7],
+                              0,
+                              Model_BASIC_DISGUST.confidence$`97.5 %`[8],
+                              0,
+                              Model_BASIC_DISGUST.confidence$`97.5 %`[9],
+                              0,
+                              0,
+                              0),
+            
+                  "SE"=c(
+                    df_Disgust.coefficients$`Std. Error`[2],
+                    0,
+                    df_Disgust.coefficients$`Std. Error`[3],
+                    df_Disgust.coefficients$`Std. Error`[4],
+                    0,
+                    df_Disgust.coefficients$`Std. Error`[5],
+                    0,
+                    df_Disgust.coefficients$`Std. Error`[6],
+                    0,
+                    df_Disgust.coefficients$`Std. Error`[7],
+                    0,
+                    0,
+                    0),
+                  
+                  "df"=c(
+                    df_Disgust.coefficients$df[2],
+                    0,
+                    df_Disgust.coefficients$df[3],
+                    df_Disgust.coefficients$df[4],
+                    0,
+                    df_Disgust.coefficients$df[5],
+                    0,
+                    df_Disgust.coefficients$df[6],
+                    0,
+                    df_Disgust.coefficients$df[7],
+                    0,
+                    0,
+                    0),
+                  
+                  "tvalue" = c(
+                    df_Disgust.coefficients$`t value`[2],
+                    0, 
+                    df_Disgust.coefficients$`t value`[3],
+                    df_Disgust.coefficients$`t value`[4],
+                    0, 
+                    df_Disgust.coefficients$`t value`[5],
+                    0,
+                    df_Disgust.coefficients$`t value`[6],
+                    0, 
+                    df_Disgust.coefficients$`t value`[7],
+                    0,
+                    0,
+                    0),
+            
+                  "p" =c(df_Disgust.coefficients$`Pr(>|t|)`[2],
+                         0,
+                         df_Disgust.coefficients$`Pr(>|t|)`[3],
+                         df_Disgust.coefficients$`Pr(>|t|)`[4],
+                         0,
+                         df_Disgust.coefficients$`Pr(>|t|)`[5],
+                         0,
+                         df_Disgust.coefficients$`Pr(>|t|)`[6],
+                         0,
+                         df_Disgust.coefficients$`Pr(>|t|)`[7],
+                         0,
+                         0,
+                         0)
+                  )
+
+```
+
+```{r plot Disgust, eval=FALSE, include=FALSE}
+
+#############################################
+# Disgust
+
+data=df_Disgust
+x=df_Disgust$predictor
+y=df_Disgust$beta
+lower=df_Disgust$CIlower
+upper=df_Disgust$CIupper
+
+plotDisgust<- ggplot(data=data, aes(x = x, y = y, ymin=lower,
+                   ymax=upper)) + 
+ geom_pointrange() +
+  geom_hline(yintercept = 0.05, linetype="dotted")+
+  geom_hline(yintercept = 0.05, linetype="dotted")+
+  geom_hline(yintercept = 0, linetype = 1) +
+  geom_hline(yintercept = 0.05, linetype="dotted")+
+#  geom_hline(yintercept = 1, linetype = 2) +
+  theme_bw() + 
+  theme(
+    #plot.margin = unit(c(1, 1, 1, 4), "lines"),
+        axis.title = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        legend.position="none")  +
+    ylim(-0.3,0.3)+
+  scale_y_continuous(breaks=c(-0.3,-0.25,-0.2,-0.15,-0.1,-0.05, 0,0.05, 0.1,0.15,0.2,0.25,0.3))+
+  coord_flip()+
+  #scale_x_discrete(breaks=c("-0.1", "0", "0.1"),
+   #                   labels=c("-0.1", "0","0.1"))+
+#  facet_wrap(~ Factor) 
+  
+  xlab("Standardized coefficients (β)") +
+  ylab("Predictors")+
+
+  ggtitle("Disgust")
+
+
+plotDisgust
+```
+
+
+
+```{r demographics ignore for now, eval=FALSE, include=FALSE}
+
+df_descr<-tibble(data$age,
+                 data$gender,
+                 data$panas_pre_positive,
+                 data$panas_pre_negative,
+                 ZnewFA_data$M1,
+                 ZnewFA_data$M2,
+                 ZnewFA_data$M3,
+                 ZnewFA_data$Z_basic_happiness,
+                 ZnewFA_data$Z_basic_sadness,
+                 ZnewFA_data$Z_basic_anger,
+                 ZnewFA_data$Z_basic_surprise,
+                 ZnewFA_data$Z_basic_fear,
+                 ZnewFA_data$Z_basic_disgust)
+            
+pastecs::stat.desc(df_descr)
+```
+
+
+```{r ignore for now, eval=FALSE, include=FALSE}
+#lmer_plots = read.csv("D:/1B/Analysis/LMER_results_07052020.csv", header=TRUE)
+#lmer_plots_split<-split(lmer_plots, lmer_plots$Factor)
+
+```

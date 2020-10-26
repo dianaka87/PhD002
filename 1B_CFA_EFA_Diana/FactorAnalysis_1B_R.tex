@@ -1,0 +1,2913 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={R Notebook},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\title{R Notebook}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(MVN)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'MVN' was built under R version 3.6.3
+\end{verbatim}
+
+\begin{verbatim}
+## Registered S3 method overwritten by 'GGally':
+##   method from   
+##   +.gg   ggplot2
+\end{verbatim}
+
+\begin{verbatim}
+## sROC 0.1-2 loaded
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mvn}\NormalTok{(data\_AESTHEMOS)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $multivariateNormality
+##              Test        Statistic p value Result
+## 1 Mardia Skewness 37676.4921123524       0     NO
+## 2 Mardia Kurtosis 91.4617470260676       0     NO
+## 3             MVN             <NA>    <NA>     NO
+## 
+## $univariateNormality
+##            Test     Variable Statistic   p value Normality
+## 1  Shapiro-Wilk  challenge      0.7584  <0.001      NO    
+## 2  Shapiro-Wilk   delight       0.8230  <0.001      NO    
+## 3  Shapiro-Wilk     calm        0.8044  <0.001      NO    
+## 4  Shapiro-Wilk   curious       0.8691  <0.001      NO    
+## 5  Shapiro-Wilk    liked        0.8855  <0.001      NO    
+## 6  Shapiro-Wilk  fascinated     0.8388  <0.001      NO    
+## 7  Shapiro-Wilk  wonderful      0.7988  <0.001      NO    
+## 8  Shapiro-Wilk invigorated     0.7918  <0.001      NO    
+## 9  Shapiro-Wilk   engaged       0.8848  <0.001      NO    
+## 10 Shapiro-Wilk   baffled       0.6259  <0.001      NO    
+## 11 Shapiro-Wilk     ugly        0.5185  <0.001      NO    
+## 12 Shapiro-Wilk   deepmean      0.8003  <0.001      NO    
+## 13 Shapiro-Wilk  deepmoved      0.7391  <0.001      NO    
+## 14 Shapiro-Wilk melancholic     0.7099  <0.001      NO    
+## 15 Shapiro-Wilk  energized      0.8125  <0.001      NO    
+## 16 Shapiro-Wilk    angry        0.4203  <0.001      NO    
+## 17 Shapiro-Wilk  enchanted      0.8079  <0.001      NO    
+## 18 Shapiro-Wilk    bored        0.6466  <0.001      NO    
+## 19 Shapiro-Wilk   relaxed       0.8006  <0.001      NO    
+## 20 Shapiro-Wilk   insight       0.6373  <0.001      NO    
+## 21 Shapiro-Wilk    amused       0.7200  <0.001      NO    
+## 22 Shapiro-Wilk     sad         0.6487  <0.001      NO    
+## 23 Shapiro-Wilk   confused      0.5844  <0.001      NO    
+## 24 Shapiro-Wilk  aggressive     0.4791  <0.001      NO    
+## 25 Shapiro-Wilk sentimental     0.7221  <0.001      NO    
+## 26 Shapiro-Wilk   worried       0.6662  <0.001      NO    
+## 27 Shapiro-Wilk  nostalgic      0.7091  <0.001      NO    
+## 28 Shapiro-Wilk  surprised      0.7527  <0.001      NO    
+## 29 Shapiro-Wilk  oppressive     0.6445  <0.001      NO    
+## 30 Shapiro-Wilk   sublime       0.7404  <0.001      NO    
+## 31 Shapiro-Wilk spurredmeon     0.7457  <0.001      NO    
+## 32 Shapiro-Wilk indifferent     0.6362  <0.001      NO    
+## 33 Shapiro-Wilk  impressed      0.8298  <0.001      NO    
+## 34 Shapiro-Wilk distasteful     0.5361  <0.001      NO    
+## 35 Shapiro-Wilk   touched       0.7684  <0.001      NO    
+## 36 Shapiro-Wilk  unsettling     0.7080  <0.001      NO    
+## 37 Shapiro-Wilk sparkinterst    0.8810  <0.001      NO    
+## 38 Shapiro-Wilk    happy        0.7812  <0.001      NO    
+## 39 Shapiro-Wilk     awe         0.6979  <0.001      NO    
+## 40 Shapiro-Wilk  motivated      0.7673  <0.001      NO    
+## 41 Shapiro-Wilk    funny        0.4466  <0.001      NO    
+## 42 Shapiro-Wilk    liking       0.8840  <0.001      NO    
+## 
+## $Descriptives
+##                n     Mean   Std.Dev Median Min Max 25th 75th        Skew
+## challenge    765 1.839216 1.0945029      1   1   5    1    2  1.19402746
+## delight      765 2.262745 1.3489322      2   1   5    1    3  0.65043019
+## calm         765 2.177778 1.3370585      2   1   5    1    3  0.78928324
+## curious      765 2.329412 1.2113059      2   1   5    1    3  0.51105906
+## liked        765 2.856209 1.4078050      3   1   5    2    4  0.07845121
+## fascinated   765 2.228758 1.2620971      2   1   5    1    3  0.66105808
+## wonderful    765 2.158170 1.3302076      2   1   5    1    3  0.75557801
+## invigorated  765 2.022222 1.2132677      2   1   5    1    3  0.87100711
+## engaged      765 2.495425 1.2570399      2   1   5    1    3  0.35385667
+## baffled      765 1.535948 0.9422191      1   1   5    1    2  1.74352373
+## ugly         765 1.461438 1.0117842      1   1   5    1    1  2.29332317
+## deepmean     765 2.071895 1.2464850      2   1   5    1    3  0.87656001
+## deepmoved    765 1.850980 1.1628025      1   1   5    1    2  1.27402596
+## melancholic  765 1.720261 1.0561066      1   1   5    1    2  1.39367240
+## energized    765 2.113725 1.2496627      2   1   5    1    3  0.83380593
+## angry        765 1.265359 0.7245978      1   1   5    1    1  3.20015691
+## enchanted    765 2.053595 1.1827748      2   1   5    1    3  0.79714771
+## bored        765 1.666667 1.1197887      1   1   5    1    2  1.59690421
+## relaxed      765 2.142484 1.3161647      2   1   5    1    3  0.81016064
+## insight      765 1.555556 0.9550698      1   1   5    1    2  1.75009078
+## amused       765 1.837908 1.1888997      1   1   5    1    3  1.16864997
+## sad          765 1.611765 1.0256489      1   1   5    1    2  1.64993296
+## confused     765 1.447059 0.8569900      1   1   5    1    2  2.05840667
+## aggressive   765 1.313725 0.7525749      1   1   5    1    1  2.68999362
+## sentimental  765 1.806536 1.1459965      1   1   5    1    2  1.26275473
+## worried      765 1.705882 1.1342038      1   1   5    1    2  1.46361617
+## nostalgic    765 1.754248 1.1043694      1   1   5    1    2  1.30466930
+## surprised    765 1.823529 1.0763865      1   1   5    1    3  1.04589734
+## oppressive   765 1.643137 1.0875163      1   1   5    1    2  1.70449884
+## sublime      765 1.806536 1.1005516      1   1   5    1    2  1.23424217
+## spurredmeon  765 1.820915 1.1059486      1   1   5    1    2  1.22672137
+## indifferent  765 1.534641 0.9197741      1   1   5    1    2  1.81337535
+## impressed    765 2.145098 1.2187959      2   1   5    1    3  0.77013642
+## distasteful  765 1.471895 0.9991133      1   1   5    1    1  2.18481765
+## touched      765 1.959477 1.2160272      1   1   5    1    3  1.03692572
+## unsettling   765 1.879739 1.2785667      1   1   5    1    3  1.24202876
+## sparkinterst 765 2.430065 1.2298153      2   1   5    1    3  0.46897641
+## happy        765 2.105882 1.3383312      2   1   5    1    3  0.87327699
+## awe          765 1.683660 1.0280400      1   1   5    1    2  1.43953065
+## motivated    765 1.971242 1.2350506      1   1   5    1    3  1.04120831
+## funny        765 1.299346 0.7712518      1   1   5    1    1  2.91880511
+## liking       765 3.345098 1.3038877      4   1   5    2    4 -0.42585541
+##                 Kurtosis
+## challenge     0.54410974
+## delight      -0.89652797
+## calm         -0.68993029
+## curious      -0.81802501
+## liked        -1.30339568
+## fascinated   -0.74835448
+## wonderful    -0.77769301
+## invigorated  -0.41807039
+## engaged      -0.97419638
+## baffled       2.21140234
+## ugly          4.30586089
+## deepmean     -0.39397885
+## deepmoved     0.61324135
+## melancholic   1.03966524
+## energized    -0.42503192
+## angry        10.54819913
+## enchanted    -0.58192528
+## bored         1.42455027
+## relaxed      -0.63197483
+## insight       2.30037014
+## amused        0.12174312
+## sad           1.76003085
+## confused      3.69420321
+## aggressive    7.20551580
+## sentimental   0.45498735
+## worried       0.94881854
+## nostalgic     0.58810381
+## surprised    -0.07160704
+## oppressive    1.96067744
+## sublime       0.54197639
+## spurredmeon   0.57176388
+## indifferent   2.78918045
+## impressed    -0.49520223
+## distasteful   3.80789487
+## touched      -0.11192171
+## unsettling    0.21998975
+## sparkinterst -0.83045204
+## happy        -0.57210985
+## awe           1.13998384
+## motivated    -0.10052630
+## funny         8.46014421
+## liking       -0.96130316
+\end{verbatim}
+
+CFA with original AESTHEMOS Factors
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{CFA\_AESTHEMOS\_orth.fit\textless{}{-}lavaan}\OperatorTok{::}\KeywordTok{cfa}\NormalTok{(CFA\_AESTHEMOS,}
+                         \DataTypeTok{data=}\NormalTok{data,}
+                      
+                      \DataTypeTok{rotation=}\StringTok{\textquotesingle{}varimax\textquotesingle{}}\NormalTok{,}
+                        \DataTypeTok{orthogonal=}\OtherTok{TRUE}\NormalTok{, }
+                         \DataTypeTok{estimator=}\StringTok{"WLSMV"}\NormalTok{, }
+                         \DataTypeTok{std.lv=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in lav_samplestats_from_data(lavdata = lavdata, missing = lavoptions$missing, : lavaan WARNING: number of observations (765) too small to compute Gamma
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in lav_model_vcov(lavmodel = lavmodel2, lavsamplestats = lavsamplestats, : lavaan WARNING:
+##     Could not compute standard errors! The information matrix could
+##     not be inverted. This may be a symptom that the model is not
+##     identified.
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in lav_test_satorra_bentler(lavobject = NULL, lavsamplestats = lavsamplestats, : lavaan WARNING: could not invert information matrix needed for robust test statistic
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_orth\textless{}{-}}\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{fitmeasures}\NormalTok{(CFA\_AESTHEMOS\_orth.fit))}
+
+
+\NormalTok{CFA\_AESTHEMOS\_obl.fit\textless{}{-}lavaan}\OperatorTok{::}\KeywordTok{cfa}\NormalTok{(CFA\_AESTHEMOS,}
+                         \DataTypeTok{data=}\NormalTok{data,}
+                      
+                     \CommentTok{\#  rotation=\textquotesingle{}varimax\textquotesingle{},}
+                      \CommentTok{\#  orthogonal=TRUE, }
+                         \DataTypeTok{estimator=}\StringTok{"WLSMV"}\NormalTok{, }
+                         \DataTypeTok{std.lv=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in lav_samplestats_from_data(lavdata = lavdata, missing = lavoptions$missing, : lavaan WARNING: number of observations (765) too small to compute Gamma
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in lav_object_post_check(object): lavaan WARNING: some estimated ov
+## variances are negative
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_obl\textless{}{-}}\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{fitmeasures}\NormalTok{(CFA\_AESTHEMOS\_obl.fit))}
+
+
+\CommentTok{\# saving fitindices to dataframe}
+
+\NormalTok{AEST\_fitmeasures\textless{}{-}}\KeywordTok{data.frame}\NormalTok{(}
+  \StringTok{"fitindices"}\NormalTok{=}\KeywordTok{c}\NormalTok{(}\StringTok{"chi square"}\NormalTok{, }
+                 \StringTok{"df (chi square)"}\NormalTok{, }
+                 \StringTok{"p (chi square)"}\NormalTok{,}
+                 \StringTok{"cfi"}\NormalTok{, }
+                 \StringTok{"tli"}\NormalTok{, }
+                 \StringTok{"rmsea"}\NormalTok{, }
+                 \StringTok{"agfi"}\NormalTok{ ),}
+  \StringTok{"orthogonal"}\NormalTok{=}\KeywordTok{c}\NormalTok{(fit\_orth[}\StringTok{"chisq"}\NormalTok{,], fit\_orth[}\StringTok{"df"}\NormalTok{,], fit\_orth[}\StringTok{"pvalue"}\NormalTok{,], fit\_orth[}\StringTok{"cfi"}\NormalTok{,], fit\_orth[}\StringTok{"tli"}\NormalTok{,], fit\_orth[}\StringTok{"rmsea"}\NormalTok{,], fit\_orth[}\StringTok{"agfi"}\NormalTok{,]),}
+  
+  \StringTok{"oblimin"}\NormalTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{(fit\_obl[}\StringTok{"chisq"}\NormalTok{,], fit\_obl[}\StringTok{"df"}\NormalTok{,], fit\_obl[}\StringTok{"pvalue"}\NormalTok{,], fit\_obl[}\StringTok{"cfi"}\NormalTok{,], fit\_obl[}\StringTok{"tli"}\NormalTok{,], fit\_obl[}\StringTok{"rmsea"}\NormalTok{,], fit\_obl[}\StringTok{"agfi"}\NormalTok{,]))}
+
+\CommentTok{\# reduce to only 2 decimal places so it looks less chaotic}
+\NormalTok{is.num \textless{}{-}}\StringTok{ }\KeywordTok{sapply}\NormalTok{(AEST\_fitmeasures, is.numeric)}
+\NormalTok{AEST\_fitmeasures[is.num] \textless{}{-}}\StringTok{ }\KeywordTok{lapply}\NormalTok{(AEST\_fitmeasures[is.num], round, }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(AEST\_fitmeasures)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fitindices orthogonal oblimin
+## 1      chi square   47130.07 8325.09
+## 2 df (chi square)     819.00  798.00
+## 3  p (chi square)       0.00    0.00
+## 4             cfi       0.23    0.88
+## 5             tli       0.20    0.87
+## 6           rmsea       0.27    0.11
+## 7            agfi       0.33    0.88
+\end{verbatim}
+
+Fit
+
+\hypertarget{step-1-determine-the-number-of-factors}{%
+\subsection{STEP 1: determine the number of
+factors}\label{step-1-determine-the-number-of-factors}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{fa.parallel}\NormalTok{(data\_AESTHEMOS,  }\DataTypeTok{fm=}\StringTok{"wls"}\NormalTok{, }\DataTypeTok{fa=}\StringTok{"fa"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{FactorAnalysis_1B_R_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{verbatim}
+## Parallel analysis suggests that the number of factors =  7  and the number of components =  NA
+\end{verbatim}
+
+\hypertarget{parallelanalysis-and-screeplot-indicate-7-factors-which-also-has-a-the-best-fit-when-compared-to-other-solutions}{%
+\subsubsection{--\textgreater{} parallelanalysis and screeplot indicate
+7 factors, which also has a the best fit when compared to other
+solutions}\label{parallelanalysis-and-screeplot-indicate-7-factors-which-also-has-a-the-best-fit-when-compared-to-other-solutions}}
+
+\hypertarget{step-2-factor-analysis-with-7-factors-as-suggested-by-previous-parallel-analysis-varimax-rotation-is-applied-weighted-least-squares-wls-is-used-to-estimate-the-factors}{%
+\subsection{STEP 2: Factor analysis with 7 factors (as suggested by
+previous parallel analysis), varimax rotation is applied, weighted least
+squares (WLS) is used to estimate the
+factors}\label{step-2-factor-analysis-with-7-factors-as-suggested-by-previous-parallel-analysis-varimax-rotation-is-applied-weighted-least-squares-wls-is-used-to-estimate-the-factors}}
+
+\hypertarget{path-diagram-for-the-first-efa}{%
+\subsubsection{path diagram for the first
+EFA}\label{path-diagram-for-the-first-efa}}
+
+\includegraphics{FactorAnalysis_1B_R_files/figure-latex/path diagram EFA-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#library(ggplot2)}
+
+\CommentTok{\#ggplot(EFA\_results\_long, aes(name,abs(loadings),fill=loadings))+}
+ \CommentTok{\#  facet\_wrap(\textasciitilde{}factor, nrow=1)+}
+  \CommentTok{\# geom\_bar(stat = "identity")+}
+  \CommentTok{\# coord\_flip()+}
+  \CommentTok{\#scale\_fill\_gradient2(name="Factorloadings",high="turquoise4",mid="paleturquoise",low="salmon",    midpoint = 0, guide=F)+}
+  \CommentTok{\#ylab("Loading strength")+}
+  \CommentTok{\#xlab("Item name")+}
+ \CommentTok{\#theme\_bw(base\_size = 28)}
+\end{Highlighting}
+\end{Shaded}
+
+The seven factor solution revealed some cross-loadings of items on
+several factors. Items that showed loadings on several factors with a
+difference of less than .20 were removed. Another EFA was carried out
+with the remaining items.
+
+\hypertarget{to-make-the-next-step-a-bit-simpler-the-retained-items-are-saved-into-a-new-data-frame}{%
+\subsection{to make the next step a bit simpler the retained items are
+saved into a new data
+frame}\label{to-make-the-next-step-a-bit-simpler-the-retained-items-are-saved-into-a-new-data-frame}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{EFA\_reduced\textless{}{-}}\KeywordTok{tibble}\NormalTok{(data}\OperatorTok{$}\NormalTok{energized,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{spurredmeon,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{invigorated,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{motivated,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{delight,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{happy,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{amused,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{funny,}
+                    
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{sentimental,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{deepmoved,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{touched,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{nostalgic,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{melancholic,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{sad,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{deepmean,}
+                    
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{distasteful,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{ugly,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{worried,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{unsettling,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{angry,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{aggressive,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{confused,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{oppressive,}
+
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{bored,}
+\NormalTok{                    data}\OperatorTok{$}\NormalTok{indifferent)}
+
+\KeywordTok{names}\NormalTok{(EFA\_reduced)\textless{}{-}}\KeywordTok{c}\NormalTok{(}\StringTok{"energized"}\NormalTok{,}
+                    \StringTok{"spurredmeon"}\NormalTok{,}
+                    \StringTok{"invigorated"}\NormalTok{,}
+                    \StringTok{"motivated"}\NormalTok{,}
+                    \StringTok{"delight"}\NormalTok{,}
+                    \StringTok{"happy"}\NormalTok{,}
+                    \StringTok{"amused"}\NormalTok{,}
+                    \StringTok{"funny"}\NormalTok{,}
+                    
+                    \StringTok{"sentimental"}\NormalTok{,}
+                    \StringTok{"deepmoved"}\NormalTok{,}
+                    \StringTok{"touched"}\NormalTok{,}
+                    \StringTok{"nostalgic"}\NormalTok{,}
+                    \StringTok{"melancholic"}\NormalTok{,}
+                    \StringTok{"sad"}\NormalTok{,}
+                    \StringTok{"deepmean"}\NormalTok{,}
+                    
+                    \StringTok{"distasteful"}\NormalTok{,}
+                    \StringTok{"ugly"}\NormalTok{,}
+                    \StringTok{"worried"}\NormalTok{,}
+                    \StringTok{"unsettling"}\NormalTok{,}
+                    \StringTok{"angry"}\NormalTok{,}
+                    \StringTok{"aggressive"}\NormalTok{,}
+                    \StringTok{"confused"}\NormalTok{,}
+                    \StringTok{"oppressive"}\NormalTok{,}
+                    \StringTok{"bored"}\NormalTok{,}
+                    \StringTok{"indifferent"}
+\NormalTok{                    )}
+
+
+\NormalTok{ EFA\_ordered\textless{}{-}}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(EFA\_reduced[}
+\NormalTok{   ,}\KeywordTok{c}\NormalTok{(}\StringTok{"energized"}\NormalTok{,}
+      \StringTok{"spurredmeon"}\NormalTok{,}
+      \StringTok{"invigorated"}\NormalTok{,}
+      \StringTok{"motivated"}\NormalTok{,}
+      \StringTok{"delight"}\NormalTok{,}
+      \StringTok{"happy"}\NormalTok{,}
+      \StringTok{"amused"}\NormalTok{,}
+      \StringTok{"funny"}\NormalTok{,}
+      
+      \StringTok{"sentimental"}\NormalTok{,}
+      \StringTok{"deepmoved"}\NormalTok{,}
+      \StringTok{"touched"}\NormalTok{,}
+      \StringTok{"nostalgic"}\NormalTok{,}
+      \StringTok{"melancholic"}\NormalTok{,}
+      \StringTok{"sad"}\NormalTok{,}
+      \StringTok{"deepmean"}\NormalTok{,}
+      
+      \StringTok{"distasteful"}\NormalTok{,}
+      \StringTok{"ugly"}\NormalTok{,}
+      \StringTok{"worried"}\NormalTok{,}
+      \StringTok{"unsettling"}\NormalTok{,}
+      \StringTok{"angry"}\NormalTok{,}
+      \StringTok{"aggressive"}\NormalTok{,}
+      \StringTok{"confused"}\NormalTok{,}
+      \StringTok{"oppressive"}\NormalTok{,}
+      
+      \StringTok{"bored"}\NormalTok{,}
+      \StringTok{"indifferent"}
+\NormalTok{                  )],}
+\NormalTok{         ordered))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{second-parallel-analysis-to-determine-the-number-of-factors-in-the-reduced-data-set}{%
+\subsubsection{second parallel analysis to determine the number of
+factors in the reduced data
+set}\label{second-parallel-analysis-to-determine-the-number-of-factors-in-the-reduced-data-set}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{fa.parallel}\NormalTok{(EFA\_reduced,  }\DataTypeTok{fm=}\StringTok{"wls"}\NormalTok{, }\DataTypeTok{fa=}\StringTok{"fa"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{FactorAnalysis_1B_R_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\begin{verbatim}
+## Parallel analysis suggests that the number of factors =  5  and the number of components =  NA
+\end{verbatim}
+
+the parallel analysis suggests 4 factors
+
+\hypertarget{a-second-factor-analysis-was-carried-out.}{%
+\subsubsection{A second factor analysis was carried
+out.}\label{a-second-factor-analysis-was-carried-out.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{second\_EFA\textless{}{-}psych}\OperatorTok{::}\KeywordTok{fa}\NormalTok{(EFA\_reduced, }\DataTypeTok{nfactors =} \DecValTok{4}\NormalTok{, }\DataTypeTok{rotate=}\StringTok{\textquotesingle{}varimax\textquotesingle{}}\NormalTok{,}\DataTypeTok{fm=}\StringTok{"wls"}\NormalTok{, }\DataTypeTok{fa=}\StringTok{"fa"}\NormalTok{)}
+
+\KeywordTok{print}\NormalTok{(second\_EFA, }\DataTypeTok{sort=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{digits =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Factor Analysis using method =  wls
+## Call: psych::fa(r = EFA_reduced, nfactors = 4, rotate = "varimax", 
+##     fm = "wls", fa = "fa")
+## Standardized loadings (pattern matrix) based upon correlation matrix
+##             item  WLS1  WLS2  WLS3  WLS4   h2   u2 com
+## worried       18  0.83 -0.07  0.01 -0.14 0.71 0.29 1.1
+## unsettling    19  0.79 -0.07 -0.08 -0.05 0.64 0.36 1.0
+## distasteful   16  0.75 -0.08 -0.06  0.23 0.63 0.37 1.2
+## ugly          17  0.73 -0.11 -0.13  0.21 0.61 0.39 1.3
+## angry         20  0.70  0.01 -0.02  0.05 0.49 0.51 1.0
+## aggressive    21  0.69  0.09 -0.03 -0.05 0.49 0.51 1.0
+## oppressive    23  0.64 -0.05 -0.08  0.05 0.42 0.58 1.0
+## confused      22  0.59 -0.09 -0.02  0.08 0.36 0.64 1.1
+## energized      1  0.04  0.83 -0.01 -0.17 0.71 0.29 1.1
+## spurredmeon    2  0.11  0.77 -0.01 -0.10 0.61 0.39 1.1
+## motivated      4  0.19  0.74  0.06 -0.16 0.61 0.39 1.2
+## invigorated    3  0.03  0.72  0.08 -0.08 0.54 0.46 1.1
+## amused         7 -0.17  0.72  0.05 -0.03 0.55 0.45 1.1
+## delight        5 -0.37  0.71  0.29 -0.09 0.74 0.26 1.9
+## happy          6 -0.39  0.69  0.18 -0.04 0.67 0.33 1.8
+## funny          8 -0.12  0.49 -0.13  0.07 0.28 0.72 1.3
+## deepmoved     10 -0.09  0.16  0.82 -0.15 0.73 0.27 1.2
+## touched       11 -0.20  0.22  0.81 -0.15 0.76 0.24 1.4
+## sentimental    9 -0.22  0.02  0.78  0.01 0.66 0.34 1.2
+## melancholic   13  0.05 -0.04  0.73  0.06 0.54 0.46 1.0
+## nostalgic     12 -0.15  0.05  0.67 -0.02 0.47 0.53 1.1
+## sad           14  0.13 -0.23  0.66  0.05 0.51 0.49 1.4
+## deepmean      15  0.03  0.10  0.63 -0.21 0.45 0.55 1.3
+## bored         24  0.18 -0.17 -0.14  0.73 0.61 0.39 1.3
+## indifferent   25  0.04 -0.12 -0.06  0.65 0.44 0.56 1.1
+## 
+##                       WLS1 WLS2 WLS3 WLS4
+## SS loadings           4.71 4.31 3.94 1.27
+## Proportion Var        0.19 0.17 0.16 0.05
+## Cumulative Var        0.19 0.36 0.52 0.57
+## Proportion Explained  0.33 0.30 0.28 0.09
+## Cumulative Proportion 0.33 0.63 0.91 1.00
+## 
+## Mean item complexity =  1.2
+## Test of the hypothesis that 4 factors are sufficient.
+## 
+## The degrees of freedom for the null model are  300  and the objective function was  15.55 with Chi Square of  11741.28
+## The degrees of freedom for the model are 206  and the objective function was  2.21 
+## 
+## The root mean square of the residuals (RMSR) is  0.04 
+## The df corrected root mean square of the residuals is  0.05 
+## 
+## The harmonic number of observations is  765 with the empirical chi square  692.04  with prob <  7.6e-54 
+## The total number of observations was  765  with Likelihood Chi Square =  1664.85  with prob <  2.7e-226 
+## 
+## Tucker Lewis Index of factoring reliability =  0.814
+## RMSEA index =  0.096  and the 90 % confidence intervals are  0.092 0.101
+## BIC =  297.03
+## Fit based upon off diagonal values = 0.98
+## Measures of factor score adequacy             
+##                                                   WLS1 WLS2 WLS3 WLS4
+## Correlation of (regression) scores with factors   0.96 0.96 0.95 0.84
+## Multiple R square of scores with factors          0.92 0.91 0.91 0.71
+## Minimum correlation of possible factor scores     0.83 0.82 0.82 0.42
+\end{verbatim}
+
+A CFA is carried out to confirm the EFA model with four factors.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(parameters)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: parameters
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'parameters' was built under R version 3.6.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (}\KeywordTok{require}\NormalTok{(}\StringTok{"psych"}\NormalTok{) }\OperatorTok{\&\&}\StringTok{ }\KeywordTok{require}\NormalTok{(}\StringTok{"lavaan"}\NormalTok{))}
+  
+
+  \CommentTok{\#this model gets rejected}
+\NormalTok{  model1\textless{}{-}}\StringTok{\textquotesingle{}}
+\StringTok{  M1=\textasciitilde{}worried+ unsettling+distasteful + ugly }
+\StringTok{  M2=\textasciitilde{}energized + spurredmeon + motivated + invigorated}
+\StringTok{  M3=\textasciitilde{}deepmoved+touched+sentimental+melancholic}
+\StringTok{  M4=\textasciitilde{}bored+indifferent\textquotesingle{}}
+   
+\NormalTok{ model1.fit\textless{}{-}lavaan}\OperatorTok{::}\KeywordTok{cfa}\NormalTok{(model1,}
+                         \DataTypeTok{data=}\NormalTok{EFA\_reduced,}
+                         \DataTypeTok{rotation=}\StringTok{\textquotesingle{}varimax\textquotesingle{}}\NormalTok{,}
+                         \DataTypeTok{orthogonal=}\OtherTok{TRUE}\NormalTok{, }
+                         \DataTypeTok{estimator=}\StringTok{"WLSMV"}\NormalTok{, }
+                         \DataTypeTok{std.lv=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in lav_model_vcov(lavmodel = lavmodel2, lavsamplestats = lavsamplestats, : lavaan WARNING:
+##     Could not compute standard errors! The information matrix could
+##     not be inverted. This may be a symptom that the model is not
+##     identified.
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in lav_test_satorra_bentler(lavobject = NULL, lavsamplestats = lavsamplestats, : lavaan WARNING: could not invert information matrix needed for robust test statistic
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#summary(model1.fit)}
+\end{Highlighting}
+\end{Shaded}
+
+This model is rejected. As the measures for factor adequacy are
+comparatively low and there are only two items loading in that factor,
+another CFA was carried out with only the first major 3 factors.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{\# this model works}
+\NormalTok{  model2\textless{}{-}}\StringTok{\textquotesingle{}}
+\StringTok{  M1=\textasciitilde{}worried+ unsettling+distasteful + ugly }
+\StringTok{  M2=\textasciitilde{}energized + spurredmeon + motivated + invigorated}
+\StringTok{  M3=\textasciitilde{}deepmoved+touched+sentimental+melancholic \textquotesingle{}}
+   
+\NormalTok{ model2.fit\textless{}{-}lavaan}\OperatorTok{::}\KeywordTok{cfa}\NormalTok{(model2,}
+                         \DataTypeTok{data=}\NormalTok{EFA\_ordered,}
+                         \DataTypeTok{rotation=}\StringTok{\textquotesingle{}varimax\textquotesingle{}}\NormalTok{,}
+                         \DataTypeTok{orthogonal=}\OtherTok{TRUE}\NormalTok{, }
+                         \DataTypeTok{estimator=}\StringTok{"WLSMV"}\NormalTok{, }
+                         \DataTypeTok{std.lv=}\OtherTok{TRUE}\NormalTok{)}
+  
+\KeywordTok{fitmeasures}\NormalTok{(model2.fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                          npar                          fmin 
+##                        60.000                         0.689 
+##                         chisq                            df 
+##                      1054.687                        54.000 
+##                        pvalue                  chisq.scaled 
+##                         0.000                       576.540 
+##                     df.scaled                 pvalue.scaled 
+##                        54.000                         0.000 
+##          chisq.scaling.factor                baseline.chisq 
+##                         1.922                     27880.197 
+##                   baseline.df               baseline.pvalue 
+##                        66.000                         0.000 
+##         baseline.chisq.scaled            baseline.df.scaled 
+##                     14383.934                        66.000 
+##        baseline.pvalue.scaled baseline.chisq.scaling.factor 
+##                         0.000                         1.943 
+##                           cfi                           tli 
+##                         0.964                         0.956 
+##                          nnfi                           rfi 
+##                         0.956                         0.954 
+##                           nfi                          pnfi 
+##                         0.962                         0.787 
+##                           ifi                           rni 
+##                         0.964                         0.964 
+##                    cfi.scaled                    tli.scaled 
+##                         0.964                         0.955 
+##                    cfi.robust                    tli.robust 
+##                            NA                            NA 
+##                   nnfi.scaled                   nnfi.robust 
+##                         0.955                            NA 
+##                    rfi.scaled                    nfi.scaled 
+##                         0.951                         0.960 
+##                    ifi.scaled                    rni.scaled 
+##                         0.964                         0.964 
+##                    rni.robust                         rmsea 
+##                            NA                         0.156 
+##                rmsea.ci.lower                rmsea.ci.upper 
+##                         0.148                         0.164 
+##                  rmsea.pvalue                  rmsea.scaled 
+##                         0.000                         0.113 
+##         rmsea.ci.lower.scaled         rmsea.ci.upper.scaled 
+##                         0.104                         0.121 
+##           rmsea.pvalue.scaled                  rmsea.robust 
+##                         0.000                            NA 
+##         rmsea.ci.lower.robust         rmsea.ci.upper.robust 
+##                            NA                            NA 
+##           rmsea.pvalue.robust                           rmr 
+##                            NA                         0.154 
+##                    rmr_nomean                          srmr 
+##                         0.165                         0.165 
+##                  srmr_bentler           srmr_bentler_nomean 
+##                         0.154                         0.165 
+##                          crmr                   crmr_nomean 
+##                         0.165                         0.180 
+##                    srmr_mplus             srmr_mplus_nomean 
+##                         0.154                         0.165 
+##                         cn_05                         cn_01 
+##                        53.267                        59.725 
+##                           gfi                          agfi 
+##                         0.974                         0.946 
+##                          pgfi                           mfi 
+##                         0.462                         0.519
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(model2.fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## lavaan 0.6-5 ended normally after 19 iterations
+## 
+##   Estimator                                       DWLS
+##   Optimization method                           NLMINB
+##   Number of free parameters                         60
+##                                                       
+##   Number of observations                           765
+##                                                       
+## Model Test User Model:
+##                                               Standard      Robust
+##   Test Statistic                              1054.687     576.540
+##   Degrees of freedom                                54          54
+##   P-value (Chi-square)                           0.000       0.000
+##   Scaling correction factor                                  1.922
+##   Shift parameter                                           27.717
+##     for the simple second-order correction 
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model        Unstructured
+##   Standard errors                           Robust.sem
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##   M1 =~                                               
+##     worried           0.871    0.018   48.569    0.000
+##     unsettling        0.891    0.016   55.541    0.000
+##     distasteful       0.902    0.016   58.186    0.000
+##     ugly              0.909    0.015   58.660    0.000
+##   M2 =~                                               
+##     energized         0.923    0.011   84.547    0.000
+##     spurredmeon       0.860    0.014   62.725    0.000
+##     motivated         0.849    0.015   56.867    0.000
+##     invigorated       0.816    0.016   50.052    0.000
+##   M3 =~                                               
+##     deepmoved         0.937    0.012   80.970    0.000
+##     touched           0.938    0.012   81.503    0.000
+##     sentimental       0.797    0.018   44.033    0.000
+##     melancholic       0.735    0.024   30.929    0.000
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##   M1 ~~                                               
+##     M2                0.000                           
+##     M3                0.000                           
+##   M2 ~~                                               
+##     M3                0.000                           
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##    .worried           0.000                           
+##    .unsettling        0.000                           
+##    .distasteful       0.000                           
+##    .ugly              0.000                           
+##    .energized         0.000                           
+##    .spurredmeon       0.000                           
+##    .motivated         0.000                           
+##    .invigorated       0.000                           
+##    .deepmoved         0.000                           
+##    .touched           0.000                           
+##    .sentimental       0.000                           
+##    .melancholic       0.000                           
+##     M1                0.000                           
+##     M2                0.000                           
+##     M3                0.000                           
+## 
+## Thresholds:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##     worried|t1        0.395    0.047    8.468    0.000
+##     worried|t2        0.796    0.051   15.614    0.000
+##     worried|t3        1.207    0.060   20.235    0.000
+##     worried|t4        1.843    0.088   20.922    0.000
+##     unsettling|t1     0.243    0.046    5.306    0.000
+##     unsettling|t2     0.659    0.049   13.421    0.000
+##     unsettling|t3     1.018    0.055   18.511    0.000
+##     unsettling|t4     1.501    0.070   21.508    0.000
+##     distasteful|t1    0.730    0.050   14.595    0.000
+##     distasteful|t2    1.111    0.057   19.443    0.000
+##     distasteful|t3    1.425    0.067   21.343    0.000
+##     distasteful|t4    1.899    0.092   20.637    0.000
+##     ugly|t1           0.765    0.051   15.141    0.000
+##     ugly|t2           1.135    0.058   19.663    0.000
+##     ugly|t3           1.443    0.067   21.393    0.000
+##     ugly|t4           1.792    0.085   21.138    0.000
+##     energized|t1     -0.126    0.045   -2.781    0.005
+##     energized|t2      0.399    0.047    8.539    0.000
+##     energized|t3      1.007    0.055   18.390    0.000
+##     energized|t4      1.543    0.072   21.550    0.000
+##     spurredmeon|t1    0.133    0.045    2.926    0.003
+##     spurredmeon|t2    0.696    0.050   14.045    0.000
+##     spurredmeon|t3    1.293    0.062   20.786    0.000
+##     spurredmeon|t4    1.843    0.088   20.922    0.000
+##     motivated|t1      0.051    0.045    1.120    0.263
+##     motivated|t2      0.557    0.048   11.599    0.000
+##     motivated|t3      1.041    0.055   18.751    0.000
+##     motivated|t4      1.611    0.075   21.548    0.000
+##     invigorated|t1   -0.015    0.045   -0.325    0.745
+##     invigorated|t2    0.445    0.047    9.468    0.000
+##     invigorated|t3    1.052    0.056   18.869    0.000
+##     invigorated|t4    1.730    0.081   21.341    0.000
+##     deepmoved|t1      0.126    0.045    2.781    0.005
+##     deepmoved|t2      0.713    0.050   14.321    0.000
+##     deepmoved|t3      1.193    0.059   20.135    0.000
+##     deepmoved|t4      1.674    0.078   21.469    0.000
+##     touched|t1        0.044    0.045    0.976    0.329
+##     touched|t2        0.580    0.048   12.022    0.000
+##     touched|t3        1.035    0.055   18.691    0.000
+##     touched|t4        1.688    0.079   21.444    0.000
+##     sentimental|t1    0.210    0.046    4.586    0.000
+##     sentimental|t2    0.726    0.050   14.527    0.000
+##     sentimental|t3    1.161    0.058   19.878    0.000
+##     sentimental|t4    1.843    0.088   20.922    0.000
+##     melancholic|t1    0.253    0.046    5.522    0.000
+##     melancholic|t2    0.809    0.051   15.815    0.000
+##     melancholic|t3    1.364    0.065   21.130    0.000
+##     melancholic|t4    1.963    0.097   20.262    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##    .worried           0.241                           
+##    .unsettling        0.206                           
+##    .distasteful       0.186                           
+##    .ugly              0.174                           
+##    .energized         0.148                           
+##    .spurredmeon       0.260                           
+##    .motivated         0.279                           
+##    .invigorated       0.335                           
+##    .deepmoved         0.123                           
+##    .touched           0.121                           
+##    .sentimental       0.365                           
+##    .melancholic       0.459                           
+##     M1                1.000                           
+##     M2                1.000                           
+##     M3                1.000                           
+## 
+## Scales y*:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##     worried           1.000                           
+##     unsettling        1.000                           
+##     distasteful       1.000                           
+##     ugly              1.000                           
+##     energized         1.000                           
+##     spurredmeon       1.000                           
+##     motivated         1.000                           
+##     invigorated       1.000                           
+##     deepmoved         1.000                           
+##     touched           1.000                           
+##     sentimental       1.000                           
+##     melancholic       1.000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{factorscores\textless{}{-}}\KeywordTok{lavPredict}\NormalTok{(model2.fit)}
+\NormalTok{lavaan}\OperatorTok{::}\KeywordTok{inspect}\NormalTok{(model2.fit, }\StringTok{\textquotesingle{}r2\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     worried  unsettling distasteful        ugly   energized spurredmeon 
+##       0.759       0.794       0.814       0.826       0.852       0.740 
+##   motivated invigorated   deepmoved     touched sentimental melancholic 
+##       0.721       0.665       0.877       0.879       0.635       0.541
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{var\textless{}{-}}\KeywordTok{mean}\NormalTok{(lavaan}\OperatorTok{::}\KeywordTok{lavInspect}\NormalTok{(model2.fit, }\StringTok{\textquotesingle{}r2\textquotesingle{}}\NormalTok{))}
+
+\NormalTok{lavaan}\OperatorTok{::}\KeywordTok{inspectSampleCov}\NormalTok{(}\DataTypeTok{model=}\NormalTok{model2, }\DataTypeTok{data=}\NormalTok{EFA\_ordered)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $cov
+##             worrid unsttl dststf ugly   enrgzd sprrdm motvtd invgrt depmvd
+## worried      1.000                                                        
+## unsettling   0.833  1.000                                                 
+## distasteful  0.700  0.740  1.000                                          
+## ugly         0.693  0.728  0.875  1.000                                   
+## energized    0.007 -0.007 -0.137 -0.247  1.000                            
+## spurredmeon  0.062  0.029 -0.055 -0.120  0.770  1.000                     
+## motivated    0.157  0.128 -0.002 -0.100  0.793  0.747  1.000              
+## invigorated -0.004  0.007 -0.053 -0.177  0.763  0.717  0.646  1.000       
+## deepmoved   -0.153 -0.221 -0.309 -0.452  0.177  0.178  0.230  0.192  1.000
+## touched     -0.278 -0.334 -0.406 -0.533  0.186  0.159  0.230  0.223  0.887
+## sentimental -0.266 -0.343 -0.320 -0.487 -0.003 -0.024 -0.050  0.149  0.717
+## melancholic  0.054 -0.043  0.007 -0.102 -0.051 -0.022  0.045  0.046  0.675
+##             touchd sntmnt mlnchl
+## worried                         
+## unsettling                      
+## distasteful                     
+## ugly                            
+## energized                       
+## spurredmeon                     
+## motivated                       
+## invigorated                     
+## deepmoved                       
+## touched      1.000              
+## sentimental  0.740  1.000       
+## melancholic  0.632  0.664  1.000
+## 
+## $mean
+##     worried  unsettling distasteful        ugly   energized spurredmeon 
+##           0           0           0           0           0           0 
+##   motivated invigorated   deepmoved     touched sentimental melancholic 
+##           0           0           0           0           0           0 
+## 
+## $th
+##     worried|t1     worried|t2     worried|t3     worried|t4  unsettling|t1 
+##          0.395          0.796          1.207          1.843          0.243 
+##  unsettling|t2  unsettling|t3  unsettling|t4 distasteful|t1 distasteful|t2 
+##          0.659          1.018          1.501          0.730          1.111 
+## distasteful|t3 distasteful|t4        ugly|t1        ugly|t2        ugly|t3 
+##          1.425          1.899          0.765          1.135          1.443 
+##        ugly|t4   energized|t1   energized|t2   energized|t3   energized|t4 
+##          1.792         -0.126          0.399          1.007          1.543 
+## spurredmeon|t1 spurredmeon|t2 spurredmeon|t3 spurredmeon|t4   motivated|t1 
+##          0.133          0.696          1.293          1.843          0.051 
+##   motivated|t2   motivated|t3   motivated|t4 invigorated|t1 invigorated|t2 
+##          0.557          1.041          1.611         -0.015          0.445 
+## invigorated|t3 invigorated|t4   deepmoved|t1   deepmoved|t2   deepmoved|t3 
+##          1.052          1.730          0.126          0.713          1.193 
+##   deepmoved|t4     touched|t1     touched|t2     touched|t3     touched|t4 
+##          1.674          0.044          0.580          1.035          1.688 
+## sentimental|t1 sentimental|t2 sentimental|t3 sentimental|t4 melancholic|t1 
+##          0.210          0.726          1.161          1.843          0.253 
+## melancholic|t2 melancholic|t3 melancholic|t4 
+##          0.809          1.364          1.963
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#lavaan::inspectSampleCov(data=model2.fit)}
+\KeywordTok{lavPredict}\NormalTok{(model2.fit,}\DataTypeTok{se=}\StringTok{"standard"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in lavPredict(model2.fit, se = "standard"): lavaan WARNING: standard
+## errors not available (yet) for non-normal data
+\end{verbatim}
+
+\begin{verbatim}
+##            M1     M2     M3
+##   [1,] -0.490  0.326 -0.718
+##   [2,]  0.409  0.175  0.459
+##   [3,] -0.490  2.421  1.311
+##   [4,]  0.990 -0.267 -0.718
+##   [5,]  0.916  0.812  0.464
+##   [6,] -0.490 -0.880 -0.718
+##   [7,]  0.103  0.394  0.217
+##   [8,] -0.490  0.930 -0.079
+##   [9,]  0.770 -0.880 -0.718
+##  [10,]  1.178 -0.880 -0.718
+##  [11,]  0.091  0.705 -0.718
+##  [12,]  0.464  0.587  0.464
+##  [13,]  1.054 -0.880 -0.718
+##  [14,]  0.350 -0.880 -0.319
+##  [15,]  0.287  0.839 -0.718
+##  [16,]  0.274 -0.880 -0.718
+##  [17,]  0.491  0.631  0.216
+##  [18,] -0.490 -0.880 -0.718
+##  [19,] -0.490  0.726 -0.718
+##  [20,]  1.191  0.384 -0.371
+##  [21,]  0.103 -0.880 -0.718
+##  [22,]  0.597  1.441 -0.062
+##  [23,]  0.447  1.096 -0.718
+##  [24,]  0.611  0.270  0.217
+##  [25,]  0.890  0.370 -0.062
+##  [26,]  1.570  0.245 -0.718
+##  [27,]  0.445 -0.880 -0.718
+##  [28,]  1.485 -0.096 -0.263
+##  [29,]  0.350 -0.408 -0.718
+##  [30,]  0.624  1.907 -0.718
+##  [31,] -0.490 -0.880 -0.718
+##  [32,] -0.490  0.374 -0.263
+##  [33,]  1.801  0.084 -0.062
+##  [34,]  0.350  1.193  1.102
+##  [35,]  0.527 -0.880 -0.718
+##  [36,]  0.729  1.734  1.957
+##  [37,] -0.490 -0.880 -0.718
+##  [38,]  0.350  0.587 -0.718
+##  [39,]  0.624  0.375 -0.371
+##  [40,]  0.708 -0.408 -0.718
+##  [41,]  0.981 -0.880 -0.718
+##  [42,]  1.485  0.812 -0.718
+##  [43,] -0.490  0.588 -0.319
+##  [44,]  1.134  0.464 -0.371
+##  [45,]  1.900  0.507 -0.718
+##  [46,]  1.024  0.260 -0.062
+##  [47,]  0.803  0.839  0.098
+##  [48,]  0.820 -0.267 -0.718
+##  [49,] -0.490 -0.033 -0.718
+##  [50,]  1.761  0.183 -0.718
+##  [51,]  1.332 -0.880 -0.718
+##  [52,]  0.091  0.700 -0.718
+##  [53,] -0.490  1.051 -0.079
+##  [54,] -0.490  1.413 -0.718
+##  [55,]  0.734  1.441 -0.153
+##  [56,]  1.074  0.955  0.464
+##  [57,] -0.490 -0.879  0.156
+##  [58,]  0.787  0.353 -0.718
+##  [59,]  0.447  0.966  0.459
+##  [60,]  1.024 -0.058 -0.718
+##  [61,]  0.880 -0.267 -0.718
+##  [62,] -0.490  1.239  0.670
+##  [63,]  0.274  0.326  0.364
+##  [64,]  0.708  0.011 -0.718
+##  [65,] -0.490  0.320  0.057
+##  [66,]  0.103 -0.096 -0.718
+##  [67,]  1.077 -0.880 -0.718
+##  [68,]  1.189 -0.880 -0.718
+##  [69,]  0.246 -0.408 -0.718
+##  [70,] -0.490  1.051 -0.079
+##  [71,]  0.568  1.900  0.161
+##  [72,] -0.490  0.443 -0.718
+##  [73,] -0.490  2.421 -0.062
+##  [74,]  0.820 -0.135 -0.718
+##  [75,]  0.252  0.700 -0.079
+##  [76,]  1.009  0.603  0.035
+##  [77,]  1.164  0.812 -0.718
+##  [78,]  0.350  1.441  0.070
+##  [79,]  0.464  0.839  0.048
+##  [80,] -0.490  0.839 -0.718
+##  [81,]  0.784  2.096 -0.202
+##  [82,] -0.490 -0.033 -0.062
+##  [83,] -0.490 -0.880 -0.718
+##  [84,]  1.517  0.375 -0.079
+##  [85,]  1.485  0.839  0.539
+##  [86,]  0.103  0.204  0.217
+##  [87,]  1.883  0.196  1.076
+##  [88,] -0.490 -0.880 -0.718
+##  [89,]  0.091  0.628 -0.718
+##  [90,] -0.490  0.446  0.325
+##  [91,] -0.490  0.320 -0.718
+##  [92,]  0.464  0.685 -0.718
+##  [93,]  1.282  1.090 -0.718
+##  [94,] -0.490  0.353 -0.718
+##  [95,]  1.382  0.488 -0.076
+##  [96,]  2.461 -0.880 -0.718
+##  [97,]  0.603  1.638 -0.062
+##  [98,]  0.883  0.394 -0.718
+##  [99,]  0.893 -0.267 -0.718
+## [100,]  0.103  0.260 -0.718
+## [101,]  1.177  0.587 -0.079
+## [102,]  0.350  1.710 -0.062
+## [103,]  0.605 -0.880 -0.718
+## [104,]  0.984 -0.880 -0.718
+## [105,] -0.490 -0.033 -0.718
+## [106,]  1.078 -0.880 -0.718
+## [107,]  1.272  0.855  1.438
+## [108,] -0.490  0.839 -0.718
+## [109,]  0.103 -0.096 -0.718
+## [110,]  0.473 -0.066 -0.079
+## [111,] -0.490  0.248 -0.718
+## [112,]  1.562 -0.244 -0.718
+## [113,]  0.091  1.340 -0.718
+## [114,] -0.490  0.700  0.457
+## [115,]  1.676 -0.880 -0.718
+## [116,]  0.659 -0.880 -0.718
+## [117,]  0.103  0.260 -0.718
+## [118,]  1.297 -0.880 -0.718
+## [119,]  0.287  0.587  0.216
+## [120,] -0.490 -0.880 -0.718
+## [121,] -0.490  0.260 -0.079
+## [122,]  1.663  0.246 -0.371
+## [123,]  0.350 -0.880 -0.718
+## [124,]  1.024  1.441 -0.319
+## [125,]  1.532  0.641 -0.718
+## [126,]  0.454 -0.058 -0.718
+## [127,]  0.889  0.084  0.048
+## [128,]  0.287  0.111 -0.718
+## [129,]  0.397 -0.880 -0.718
+## [130,]  1.173  0.084 -0.371
+## [131,]  0.464 -0.880 -0.718
+## [132,]  0.568  0.491 -0.718
+## [133,]  0.426 -0.880 -0.371
+## [134,] -0.490 -0.880 -0.718
+## [135,]  1.638  0.084 -0.718
+## [136,]  0.409  1.056  0.943
+## [137,]  0.527 -0.880 -0.718
+## [138,]  1.244  0.614  0.215
+## [139,]  0.103  0.020 -0.718
+## [140,]  0.855 -0.880 -0.718
+## [141,]  0.611 -0.880 -0.718
+## [142,] -0.490  0.631 -0.062
+## [143,]  1.765 -0.408 -0.718
+## [144,]  1.291  0.488 -0.371
+## [145,] -0.490  0.204 -0.718
+## [146,]  1.386  0.839  0.464
+## [147,]  2.461  0.736 -0.718
+## [148,]  1.277  0.603  0.305
+## [149,]  2.166  0.084 -0.371
+## [150,]  1.271 -0.475 -0.718
+## [151,] -0.490  0.445 -0.718
+## [152,]  0.701 -0.176 -0.718
+## [153,]  0.890 -0.096 -0.718
+## [154,]  0.605 -0.267 -0.718
+## [155,]  0.729 -0.880  0.187
+## [156,] -0.490  0.013 -0.718
+## [157,]  0.855  0.956  0.803
+## [158,]  1.168  0.446 -0.076
+## [159,]  0.274 -0.880 -0.718
+## [160,]  1.074  0.020 -0.718
+## [161,]  2.166 -0.096 -0.718
+## [162,]  0.734 -0.880 -0.371
+## [163,]  1.743 -0.880 -0.371
+## [164,]  0.694  0.068 -0.718
+## [165,]  1.676  0.394  0.830
+## [166,]  2.461 -0.880 -0.718
+## [167,]  0.252 -0.880 -0.718
+## [168,]  1.640 -0.880 -0.718
+## [169,]  1.384 -0.880 -0.371
+## [170,]  1.173 -0.007 -0.718
+## [171,]  0.274 -0.880 -0.718
+## [172,]  0.611 -0.176 -0.718
+## [173,]  1.839  0.384 -0.263
+## [174,] -0.490 -0.880 -0.718
+## [175,]  0.915  0.951 -0.718
+## [176,]  0.855  0.648  0.224
+## [177,]  0.921  0.198 -0.079
+## [178,]  1.290  0.370  0.048
+## [179,]  1.789  0.020 -0.718
+## [180,]  1.748 -0.880 -0.718
+## [181,]  1.277  0.740 -0.263
+## [182,]  0.980 -0.880 -0.718
+## [183,]  1.250  1.132 -0.718
+## [184,]  0.841 -0.880 -0.718
+## [185,] -0.490 -0.880 -0.718
+## [186,]  1.164 -0.880 -0.062
+## [187,]  1.640 -0.267  0.527
+## [188,]  1.761  0.106 -0.371
+## [189,]  2.461 -0.009 -0.153
+## [190,]  0.701 -0.880 -0.718
+## [191,]  0.823 -0.880 -0.371
+## [192,]  1.939 -0.408 -0.718
+## [193,]  0.640 -0.880 -0.718
+## [194,]  2.136 -0.880 -0.718
+## [195,]  2.136  1.114 -0.371
+## [196,]  0.597  0.260 -0.718
+## [197,]  2.126  0.118  0.171
+## [198,]  2.166 -0.880 -0.718
+## [199,]  1.492  0.084  0.070
+## [200,]  1.382  0.464  0.648
+## [201,]  0.835 -0.880 -0.718
+## [202,]  0.350 -0.880 -0.718
+## [203,]  1.377  0.426 -0.371
+## [204,]  0.605 -0.880 -0.718
+## [205,]  0.971  0.320 -0.079
+## [206,]  0.473  0.504  1.089
+## [207,] -0.490  1.090  0.445
+## [208,]  0.855  0.893 -0.718
+## [209,]  0.091 -0.096 -0.153
+## [210,] -0.490 -0.880 -0.718
+## [211,]  0.873  0.020 -0.718
+## [212,]  1.297 -0.880 -0.718
+## [213,]  1.649 -0.880 -0.263
+## [214,]  1.507 -0.880 -0.371
+## [215,]  1.095 -0.058 -0.718
+## [216,]  1.212  0.137  0.539
+## [217,]  1.938 -0.880 -0.718
+## [218,]  0.787 -0.880 -0.718
+## [219,]  1.191  0.084 -0.718
+## [220,]  1.532 -0.880 -0.718
+## [221,]  1.088 -0.408 -0.718
+## [222,]  0.646 -0.880 -0.718
+## [223,]  0.350  0.587 -0.718
+## [224,]  1.787  0.384 -0.263
+## [225,]  0.103 -0.267 -0.718
+## [226,]  0.603  1.441 -0.718
+## [227,]  1.164  0.370 -0.718
+## [228,]  0.927  0.300  0.217
+## [229,]  1.176  0.263 -0.718
+## [230,]  0.855 -0.880 -0.718
+## [231,]  1.177 -0.135 -0.718
+## [232,]  1.595  0.838  0.109
+## [233,]  0.690 -0.880 -0.371
+## [234,]  1.384  0.957 -0.718
+## [235,]  1.003 -0.880 -0.718
+## [236,] -0.490 -0.880 -0.718
+## [237,]  1.565  0.958 -0.153
+## [238,]  1.761  0.603  0.683
+## [239,]  1.397 -0.408 -0.718
+## [240,]  1.939  0.298  0.630
+## [241,]  0.103 -0.880 -0.718
+## [242,]  0.473 -0.880 -0.718
+## [243,]  1.761 -0.880 -0.371
+## [244,]  0.884 -0.880 -0.718
+## [245,]  1.939 -0.880 -0.718
+## [246,]  2.461  1.329 -0.263
+## [247,]  0.491  0.106 -0.718
+## [248,]  1.092  0.839  0.409
+## [249,]  2.461  1.477 -0.079
+## [250,]  1.649  0.106  0.070
+## [251,]  1.074  0.603 -0.718
+## [252,]  1.311 -0.475 -0.718
+## [253,] -0.490  0.426 -0.062
+## [254,]  0.987  0.345 -0.718
+## [255,]  0.733  0.445 -0.062
+## [256,] -0.490 -0.033 -0.718
+## [257,]  0.252  1.213  0.659
+## [258,] -0.490  0.587  0.216
+## [259,]  0.605  0.978  0.542
+## [260,]  0.890  1.070  1.581
+## [261,]  0.611 -0.267 -0.718
+## [262,]  0.103  0.106 -0.718
+## [263,]  0.103  0.703  0.187
+## [264,]  1.538 -0.880 -0.718
+## [265,]  0.970 -0.475 -0.718
+## [266,]  0.091  0.705  0.526
+## [267,]  0.673 -0.096  0.048
+## [268,] -0.490  0.740 -0.718
+## [269,]  0.694 -0.880 -0.319
+## [270,]  0.103  0.587 -0.718
+## [271,]  0.103 -0.880 -0.718
+## [272,]  0.350  0.491  0.539
+## [273,]  0.091 -0.408 -0.079
+## [274,]  0.103  0.700 -0.718
+## [275,]  0.807  0.839 -0.718
+## [276,]  0.274 -0.880 -0.718
+## [277,]  0.409  2.421  0.226
+## [278,]  0.103 -0.880 -0.718
+## [279,]  0.091  0.700 -0.079
+## [280,]  0.855  0.260  0.217
+## [281,]  0.855  1.162 -0.718
+## [282,]  0.350 -0.244 -0.718
+## [283,] -0.490  1.324  0.957
+## [284,] -0.490  0.368 -0.718
+## [285,]  0.624  1.442 -0.079
+## [286,] -0.490  0.444  0.057
+## [287,]  0.287 -0.096 -0.718
+## [288,]  0.473  1.305 -0.103
+## [289,]  0.873  0.418  1.297
+## [290,]  0.624  0.504 -0.371
+## [291,]  1.333  0.318 -0.153
+## [292,] -0.490 -0.880 -0.718
+## [293,] -0.490  1.753  1.584
+## [294,]  0.605 -0.880 -0.718
+## [295,] -0.490  0.252 -0.718
+## [296,] -0.490 -0.408 -0.718
+## [297,]  0.603  1.461 -0.718
+## [298,] -0.490  0.445 -0.319
+## [299,]  1.069  0.817  0.542
+## [300,]  2.126  0.492 -0.718
+## [301,]  0.605  1.329  0.630
+## [302,]  0.915  1.193  0.445
+## [303,]  0.884  0.020 -0.718
+## [304,]  0.103  1.329 -0.062
+## [305,]  0.611 -0.096 -0.079
+## [306,]  0.733  0.204 -0.718
+## [307,] -0.490  0.137 -0.153
+## [308,] -0.490  0.220  0.542
+## [309,] -0.490  1.188 -0.079
+## [310,] -0.490  1.357  1.173
+## [311,] -0.490 -0.069  0.445
+## [312,] -0.490 -0.475  0.035
+## [313,] -0.490 -0.880 -0.718
+## [314,] -0.490  1.204  0.682
+## [315,] -0.490  2.096 -0.079
+## [316,] -0.490 -0.058 -0.718
+## [317,]  0.091 -0.367 -0.718
+## [318,]  0.491  0.839  0.630
+## [319,] -0.490  1.589  0.217
+## [320,] -0.490 -0.267 -0.319
+## [321,]  0.091  1.188 -0.718
+## [322,] -0.490 -0.880 -0.718
+## [323,]  0.445  0.198  0.682
+## [324,]  0.246 -0.268 -0.718
+## [325,] -0.490  0.700  0.187
+## [326,] -0.490  1.602  0.954
+## [327,] -0.490  0.426 -0.718
+## [328,] -0.490  1.441 -0.103
+## [329,]  0.274 -0.408 -0.718
+## [330,] -0.490  0.346 -0.319
+## [331,] -0.490  0.740 -0.718
+## [332,] -0.490  1.635 -0.718
+## [333,] -0.490 -0.135 -0.718
+## [334,] -0.490  0.838  0.307
+## [335,] -0.490  0.464 -0.718
+## [336,]  1.290  1.352 -0.718
+## [337,] -0.490 -0.096 -0.718
+## [338,]  0.447 -0.880 -0.718
+## [339,] -0.490  1.894  0.156
+## [340,] -0.490  0.542  0.474
+## [341,]  0.246  0.106  0.391
+## [342,] -0.490  1.709  1.716
+## [343,] -0.490  0.220 -0.718
+## [344,] -0.490  2.132  0.187
+## [345,] -0.490 -0.267 -0.718
+## [346,] -0.490 -0.058 -0.371
+## [347,] -0.490  0.475 -0.718
+## [348,] -0.490  1.441 -0.062
+## [349,] -0.490 -0.176 -0.319
+## [350,] -0.490  0.587  0.409
+## [351,]  0.605  2.421 -0.718
+## [352,] -0.490  0.839  0.156
+## [353,] -0.490  0.084 -0.079
+## [354,] -0.490  0.893 -0.718
+## [355,] -0.490  0.951 -0.718
+## [356,] -0.490  0.700  0.619
+## [357,] -0.490  0.700  0.057
+## [358,] -0.490 -0.880 -0.319
+## [359,] -0.490  0.204 -0.319
+## [360,] -0.490 -0.058 -0.718
+## [361,] -0.490  0.318  0.887
+## [362,]  0.568  0.748  1.806
+## [363,] -0.490 -0.880  0.474
+## [364,] -0.490 -0.880 -0.718
+## [365,] -0.490  1.213  0.660
+## [366,] -0.490  1.727  0.542
+## [367,]  0.274 -0.880 -0.718
+## [368,]  0.091 -0.058 -0.718
+## [369,] -0.490  1.452  1.668
+## [370,] -0.490  0.951 -0.718
+## [371,] -0.490  0.587  0.364
+## [372,] -0.490  0.726 -0.718
+## [373,]  0.491 -0.880 -0.718
+## [374,]  0.831  0.426 -0.319
+## [375,]  0.527 -0.880 -0.718
+## [376,] -0.490  0.817  0.217
+## [377,]  0.287  1.441  0.797
+## [378,] -0.490  0.443  0.325
+## [379,]  0.527  1.441  0.460
+## [380,] -0.490  1.894 -0.718
+## [381,] -0.490  0.839  0.409
+## [382,] -0.490  0.979  0.881
+## [383,] -0.490  1.561 -0.718
+## [384,] -0.490  0.588  1.103
+## [385,] -0.490  1.188  0.445
+## [386,] -0.490  0.013 -0.718
+## [387,]  0.573  0.426 -0.718
+## [388,] -0.490  0.588 -0.079
+## [389,] -0.490  0.089 -0.371
+## [390,] -0.490  0.631 -0.153
+## [391,]  0.091  0.838  0.891
+## [392,] -0.490  0.839 -0.062
+## [393,] -0.490  1.709  1.716
+## [394,] -0.490  0.260 -0.718
+## [395,] -0.490  0.426 -0.718
+## [396,] -0.490  0.318 -0.718
+## [397,]  0.755 -0.880 -0.718
+## [398,] -0.490  1.329 -0.718
+## [399,] -0.490  2.421  0.445
+## [400,] -0.490 -0.096 -0.718
+## [401,] -0.490  1.561  0.887
+## [402,] -0.490  1.470 -0.718
+## [403,] -0.490  1.188  0.464
+## [404,] -0.490  1.329 -0.079
+## [405,] -0.490 -0.880  0.325
+## [406,] -0.490  0.951 -0.062
+## [407,] -0.490  0.726  0.217
+## [408,]  0.668  0.587 -0.718
+## [409,] -0.490 -0.033 -0.371
+## [410,] -0.490  1.869  0.297
+## [411,] -0.490  0.183 -0.718
+## [412,] -0.490  1.918  1.740
+## [413,] -0.490  0.225  1.039
+## [414,] -0.490 -0.880  0.307
+## [415,] -0.490 -0.475 -0.718
+## [416,] -0.490  0.353 -0.079
+## [417,] -0.490  1.733  0.670
+## [418,] -0.490  0.320 -0.718
+## [419,]  0.491 -0.058 -0.718
+## [420,]  0.103  0.662  1.039
+## [421,] -0.490  2.096  0.217
+## [422,] -0.490  0.581  1.224
+## [423,] -0.490  1.188 -0.718
+## [424,]  0.527 -0.096 -0.153
+## [425,] -0.490  0.320  0.830
+## [426,] -0.490  0.020 -0.718
+## [427,] -0.490  1.056  0.217
+## [428,]  0.287  1.489  0.619
+## [429,] -0.490  0.542  0.057
+## [430,] -0.490  2.421  0.524
+## [431,] -0.490  0.013 -0.718
+## [432,] -0.490  0.491 -0.718
+## [433,] -0.490  0.839 -0.718
+## [434,] -0.490  1.635 -0.718
+## [435,] -0.490  0.106 -0.319
+## [436,] -0.490  1.441  0.325
+## [437,] -0.490  1.424 -0.718
+## [438,]  0.690  1.305 -0.319
+## [439,]  0.274 -0.367 -0.718
+## [440,] -0.490 -0.880 -0.718
+## [441,] -0.490  1.441 -0.062
+## [442,] -0.490  1.022  1.100
+## [443,] -0.490  1.094 -0.319
+## [444,] -0.490  1.709  1.716
+## [445,] -0.490 -0.096 -0.718
+## [446,] -0.490  1.318 -0.718
+## [447,] -0.490  0.956 -0.718
+## [448,] -0.490 -0.267  0.539
+## [449,] -0.490  1.077 -0.079
+## [450,]  0.103  2.421 -0.718
+## [451,] -0.490  0.588 -0.718
+## [452,] -0.490  1.435  0.474
+## [453,]  0.246  2.085 -0.202
+## [454,] -0.490  1.459  0.156
+## [455,]  0.860 -0.367 -0.718
+## [456,] -0.490  0.220 -0.718
+## [457,] -0.490  1.455  0.070
+## [458,] -0.490  0.587  0.409
+## [459,] -0.490  1.167  0.459
+## [460,]  0.473 -0.880  0.048
+## [461,] -0.490 -0.880  0.727
+## [462,] -0.490  0.155  1.620
+## [463,] -0.490 -0.880  1.093
+## [464,]  0.103  0.426  0.581
+## [465,] -0.490 -0.880  0.048
+## [466,]  0.246 -0.880 -0.371
+## [467,]  0.103 -0.329  0.187
+## [468,] -0.490 -0.096 -0.718
+## [469,] -0.490 -0.880  0.325
+## [470,] -0.490 -0.058  0.542
+## [471,] -0.490  1.022  1.729
+## [472,]  0.103 -0.880  1.662
+## [473,] -0.490 -0.880 -0.319
+## [474,] -0.490 -0.880  0.167
+## [475,]  0.624 -0.880 -0.718
+## [476,] -0.490 -0.170  1.379
+## [477,]  0.091 -0.095  1.492
+## [478,] -0.490  0.394  1.242
+## [479,]  0.473  0.084  1.174
+## [480,] -0.490 -0.880 -0.718
+## [481,] -0.490  0.260  0.943
+## [482,] -0.490 -0.096  1.632
+## [483,]  0.473 -0.880  1.010
+## [484,]  0.491  0.106  0.364
+## [485,] -0.490 -0.880  0.619
+## [486,] -0.490 -0.880  0.098
+## [487,]  0.979 -0.880 -0.002
+## [488,] -0.490 -0.880  0.542
+## [489,]  0.895 -0.880 -0.718
+## [490,] -0.490 -0.880 -0.718
+## [491,] -0.490 -0.880 -0.718
+## [492,]  0.813 -0.880  1.237
+## [493,]  0.252  0.491  1.361
+## [494,] -0.490 -0.880  0.520
+## [495,]  0.287 -0.367  0.829
+## [496,] -0.490 -0.880 -0.718
+## [497,]  0.091 -0.880  0.542
+## [498,] -0.490 -0.880  0.307
+## [499,]  0.103 -0.880  0.474
+## [500,]  0.454 -0.880 -0.718
+## [501,]  0.473 -0.880  1.321
+## [502,] -0.490 -0.475  0.464
+## [503,] -0.491  1.733  1.156
+## [504,] -0.490 -0.267  0.057
+## [505,]  0.103 -0.096  0.529
+## [506,]  0.091 -0.880  0.736
+## [507,]  0.103 -0.880 -0.079
+## [508,] -0.490 -0.880  0.226
+## [509,]  0.624  0.106  2.191
+## [510,] -0.490 -0.880 -0.371
+## [511,] -0.490 -0.880 -0.718
+## [512,] -0.490 -0.367  1.417
+## [513,] -0.490 -0.367  0.409
+## [514,] -0.490 -0.367  1.204
+## [515,]  0.246  1.051  1.129
+## [516,] -0.490  0.260 -0.371
+## [517,] -0.490 -0.880  0.409
+## [518,] -0.490  0.204  1.072
+## [519,] -0.490 -0.880 -0.079
+## [520,] -0.490 -0.880  0.542
+## [521,] -0.490  0.193  0.217
+## [522,]  0.103  0.817  0.619
+## [523,] -0.490 -0.880  1.413
+## [524,] -0.490 -0.880  0.131
+## [525,] -0.490 -0.879  0.585
+## [526,] -0.490 -0.880 -0.371
+## [527,]  0.287 -0.058  1.434
+## [528,] -0.490  0.068  1.434
+## [529,] -0.490  0.598  1.306
+## [530,]  0.913 -0.329  0.634
+## [531,] -0.490 -0.880 -0.718
+## [532,] -0.490 -0.880  0.341
+## [533,] -0.490  0.020  1.353
+## [534,]  0.350 -0.880 -0.371
+## [535,]  0.473 -0.880  0.307
+## [536,] -0.490 -0.170  0.156
+## [537,]  0.246 -0.880 -0.371
+## [538,]  0.558  0.106  0.943
+## [539,] -0.490 -0.367  0.674
+## [540,]  0.542  0.346  1.492
+## [541,]  0.274 -0.880 -0.718
+## [542,] -0.490 -0.880 -0.079
+## [543,]  0.855 -0.880  1.830
+## [544,]  0.605  0.183  0.937
+## [545,] -0.490 -0.880  1.137
+## [546,]  0.820  0.111  1.875
+## [547,] -0.490 -0.880 -0.718
+## [548,] -0.490  0.000  0.692
+## [549,] -0.490 -0.880  0.581
+## [550,] -0.490 -0.880  0.142
+## [551,]  0.611 -0.880 -0.263
+## [552,]  0.694 -0.880  0.737
+## [553,] -0.490 -0.880  0.215
+## [554,] -0.490  1.435  1.228
+## [555,] -0.490 -0.880  0.680
+## [556,]  0.491 -0.267  0.745
+## [557,]  0.873 -0.367  1.228
+## [558,]  0.252 -0.096 -0.718
+## [559,] -0.490 -0.880 -0.371
+## [560,]  0.287  0.260  1.137
+## [561,]  0.350 -0.880  0.464
+## [562,]  0.091 -0.880  0.459
+## [563,] -0.490 -0.880  2.057
+## [564,] -0.490  1.120  2.443
+## [565,] -0.490 -0.408  1.306
+## [566,]  0.694  0.662  1.297
+## [567,] -0.490 -0.880  0.417
+## [568,] -0.490 -0.880  0.619
+## [569,] -0.490 -0.205  1.864
+## [570,] -0.490 -0.069  1.830
+## [571,] -0.490 -0.880  0.820
+## [572,] -0.490 -0.058  0.660
+## [573,]  0.597  0.700  0.745
+## [574,] -0.490 -0.880  1.353
+## [575,] -0.490 -0.880 -0.319
+## [576,] -0.490 -0.880  0.283
+## [577,]  0.103 -0.880 -0.718
+## [578,] -0.490 -0.367  0.891
+## [579,] -0.490 -0.244  1.434
+## [580,] -0.490  0.353  1.354
+## [581,]  0.916 -0.093  0.304
+## [582,] -0.490 -0.880 -0.718
+## [583,]  0.573 -0.879  0.858
+## [584,] -0.490 -0.475  2.443
+## [585,]  0.103 -0.880  0.943
+## [586,]  0.350 -0.880  0.852
+## [587,] -0.490 -0.880  1.310
+## [588,] -0.490 -0.880  1.842
+## [589,]  0.927  0.013  0.394
+## [590,]  0.103 -0.475  0.817
+## [591,]  0.624  1.077  2.443
+## [592,] -0.490 -0.880  1.294
+## [593,] -0.490 -0.880  0.554
+## [594,] -0.490  0.251  0.943
+## [595,]  0.287  0.491  0.520
+## [596,] -0.490 -0.880  0.891
+## [597,]  0.708  0.210  1.957
+## [598,] -0.490 -0.880  0.217
+## [599,]  0.350  0.543  1.729
+## [600,]  0.091 -0.880  0.793
+## [601,]  0.491 -0.880  0.156
+## [602,] -0.490 -0.880  1.272
+## [603,]  0.252 -0.408  2.062
+## [604,] -0.490 -0.880  0.943
+## [605,]  1.275  0.491  0.585
+## [606,]  0.542 -0.879  0.798
+## [607,]  0.491 -0.880  0.891
+## [608,]  0.473 -0.408  0.943
+## [609,] -0.490  0.020  0.142
+## [610,]  0.835 -0.880  0.282
+## [611,]  0.734  0.260  1.677
+## [612,] -0.490 -0.880  1.662
+## [613,] -0.490 -0.880 -0.718
+## [614,]  0.445 -0.880 -0.371
+## [615,] -0.490 -0.096  1.418
+## [616,] -0.490  0.118  1.157
+## [617,]  0.397  0.598  1.655
+## [618,] -0.490  0.839 -0.079
+## [619,] -0.490 -0.880  0.464
+## [620,] -0.490  0.951  1.696
+## [621,] -0.490  0.978  0.542
+## [622,] -0.490 -0.880  0.070
+## [623,] -0.490 -0.880  0.217
+## [624,]  0.103  0.531  0.527
+## [625,] -0.490 -0.880 -0.079
+## [626,] -0.490  0.320  0.640
+## [627,] -0.490 -0.475  0.057
+## [628,] -0.490 -0.880 -0.718
+## [629,] -0.490 -0.880  0.048
+## [630,] -0.490  0.084  0.217
+## [631,] -0.490  0.155  1.039
+## [632,]  0.287  0.956  1.434
+## [633,] -0.490 -0.880 -0.718
+## [634,] -0.490 -0.880  0.750
+## [635,] -0.490 -0.880 -0.718
+## [636,] -0.490 -0.879  0.156
+## [637,] -0.490 -0.880  0.670
+## [638,] -0.490 -0.329 -0.168
+## [639,] -0.490 -0.880 -0.319
+## [640,]  0.274 -0.880 -0.263
+## [641,] -0.490 -0.880 -0.079
+## [642,]  0.895 -0.880 -0.718
+## [643,]  0.274 -0.880 -0.718
+## [644,] -0.490 -0.880 -0.718
+## [645,] -0.490 -0.096  0.305
+## [646,]  0.568  1.077  1.229
+## [647,] -0.490 -0.880  0.891
+## [648,]  0.287  1.336  1.806
+## [649,]  0.103 -0.880 -0.153
+## [650,] -0.490  1.188 -0.718
+## [651,] -0.490 -0.880 -0.718
+## [652,]  0.611 -0.879  0.057
+## [653,] -0.490  0.370  0.881
+## [654,] -0.490 -0.880  1.434
+## [655,] -0.490 -0.880  0.325
+## [656,] -0.490  0.488  0.619
+## [657,]  0.397  0.020  0.057
+## [658,] -0.490  0.183  0.745
+## [659,]  0.091 -0.880  0.619
+## [660,]  1.088 -0.880 -0.718
+## [661,]  0.103 -0.879 -0.263
+## [662,] -0.490  0.701  1.640
+## [663,] -0.490  0.011  0.606
+## [664,] -0.490 -0.880  0.048
+## [665,] -0.490 -0.880  0.325
+## [666,] -0.490  0.628  1.492
+## [667,] -0.490  1.906  1.379
+## [668,]  0.568  0.326  0.882
+## [669,]  1.085 -0.267 -0.718
+## [670,] -0.490 -0.880  0.409
+## [671,]  0.274  0.561  1.716
+## [672,] -0.490  1.574  1.310
+## [673,] -0.490 -0.880  0.325
+## [674,] -0.490 -0.058  0.131
+## [675,]  0.445  0.700  0.745
+## [676,] -0.490  0.260  0.297
+## [677,] -0.490 -0.268  0.324
+## [678,] -0.490  0.183  0.529
+## [679,] -0.490 -0.880 -0.718
+## [680,] -0.490 -0.244  1.434
+## [681,] -0.490 -0.880 -0.718
+## [682,] -0.490  0.353  1.149
+## [683,]  0.103  0.488  1.645
+## [684,] -0.490 -0.880 -0.062
+## [685,]  0.435 -0.880  0.010
+## [686,] -0.490 -0.367  1.285
+## [687,] -0.490 -0.475  0.803
+## [688,] -0.490 -0.176  1.173
+## [689,] -0.490 -0.880  1.281
+## [690,] -0.490 -0.880  0.817
+## [691,]  0.274  0.111  0.581
+## [692,]  0.103 -0.880  0.674
+## [693,]  0.287  1.305  1.039
+## [694,] -0.490 -0.880  0.957
+## [695,]  0.527 -0.267 -0.718
+## [696,]  0.605 -0.179  1.242
+## [697,] -0.490 -0.093  1.382
+## [698,] -0.490 -0.408  0.745
+## [699,] -0.490  1.709  1.742
+## [700,] -0.490 -0.880 -0.718
+## [701,] -0.490  0.527  0.364
+## [702,] -0.490 -0.880  0.820
+## [703,] -0.490 -0.880  0.891
+## [704,] -0.490 -0.880  1.103
+## [705,] -0.490  0.060  2.443
+## [706,] -0.490  0.106  0.606
+## [707,] -0.490  1.907  2.066
+## [708,]  0.873 -0.880  0.927
+## [709,] -0.490 -0.096  0.736
+## [710,] -0.490 -0.880  0.891
+## [711,]  0.103 -0.880  0.391
+## [712,] -0.490 -0.880  0.391
+## [713,] -0.490  0.587  1.032
+## [714,]  0.350 -0.880  0.224
+## [715,]  0.350 -0.880  0.217
+## [716,] -0.490 -0.475  1.153
+## [717,] -0.490 -0.176 -0.153
+## [718,] -0.490  0.641  0.891
+## [719,]  0.820  0.320  1.464
+## [720,]  0.464  0.013 -0.718
+## [721,] -0.490 -0.880  0.307
+## [722,] -0.490  1.441  2.253
+## [723,] -0.490 -0.880  0.131
+## [724,] -0.490 -0.880  0.820
+## [725,] -0.490 -0.058  0.217
+## [726,]  0.103  0.464  0.619
+## [727,] -0.490  0.183 -0.079
+## [728,] -0.490 -0.880 -0.202
+## [729,] -0.490 -0.475  0.324
+## [730,]  0.103 -0.880 -0.371
+## [731,] -0.490  0.320  0.745
+## [732,] -0.490  0.658  1.174
+## [733,] -0.490  0.370  1.361
+## [734,] -0.490  0.260  1.269
+## [735,] -0.490 -0.880 -0.718
+## [736,] -0.490  0.726  0.750
+## [737,] -0.490  0.693  1.662
+## [738,] -0.490  0.011  0.957
+## [739,]  0.091 -0.475  1.354
+## [740,]  0.246 -0.170 -0.202
+## [741,] -0.490  0.392  1.379
+## [742,] -0.490  0.726  0.630
+## [743,] -0.490 -0.880  0.509
+## [744,] -0.490  0.298  1.229
+## [745,] -0.490 -0.329  1.842
+## [746,] -0.490 -0.244 -0.718
+## [747,] -0.490 -0.880 -0.319
+## [748,]  0.091  0.326  0.745
+## [749,] -0.490 -0.058  1.085
+## [750,] -0.490  1.274  1.871
+## [751,] -0.490 -0.880  0.893
+## [752,] -0.490 -0.329 -0.718
+## [753,] -0.490 -0.880  0.070
+## [754,] -0.490 -0.880  0.830
+## [755,] -0.490 -0.880  0.674
+## [756,] -0.490  0.414  1.640
+## [757,] -0.490 -0.880  0.057
+## [758,] -0.490  1.441  1.640
+## [759,] -0.490 -0.329  1.063
+## [760,] -0.490  0.631  0.736
+## [761,] -0.490 -0.367  1.533
+## [762,] -0.490 -0.880  0.606
+## [763,] -0.490 -0.880  0.131
+## [764,] -0.490 -0.096  0.325
+## [765,] -0.490  0.011  0.617
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{CFA\_factorscores\textless{}{-}}\KeywordTok{lavPredict}\NormalTok{(model2.fit)}
+\KeywordTok{summary}\NormalTok{(model2.fit, }\DataTypeTok{rsquare =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## lavaan 0.6-5 ended normally after 19 iterations
+## 
+##   Estimator                                       DWLS
+##   Optimization method                           NLMINB
+##   Number of free parameters                         60
+##                                                       
+##   Number of observations                           765
+##                                                       
+## Model Test User Model:
+##                                               Standard      Robust
+##   Test Statistic                              1054.687     576.540
+##   Degrees of freedom                                54          54
+##   P-value (Chi-square)                           0.000       0.000
+##   Scaling correction factor                                  1.922
+##   Shift parameter                                           27.717
+##     for the simple second-order correction 
+## 
+## Parameter Estimates:
+## 
+##   Information                                 Expected
+##   Information saturated (h1) model        Unstructured
+##   Standard errors                           Robust.sem
+## 
+## Latent Variables:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##   M1 =~                                               
+##     worried           0.871    0.018   48.569    0.000
+##     unsettling        0.891    0.016   55.541    0.000
+##     distasteful       0.902    0.016   58.186    0.000
+##     ugly              0.909    0.015   58.660    0.000
+##   M2 =~                                               
+##     energized         0.923    0.011   84.547    0.000
+##     spurredmeon       0.860    0.014   62.725    0.000
+##     motivated         0.849    0.015   56.867    0.000
+##     invigorated       0.816    0.016   50.052    0.000
+##   M3 =~                                               
+##     deepmoved         0.937    0.012   80.970    0.000
+##     touched           0.938    0.012   81.503    0.000
+##     sentimental       0.797    0.018   44.033    0.000
+##     melancholic       0.735    0.024   30.929    0.000
+## 
+## Covariances:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##   M1 ~~                                               
+##     M2                0.000                           
+##     M3                0.000                           
+##   M2 ~~                                               
+##     M3                0.000                           
+## 
+## Intercepts:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##    .worried           0.000                           
+##    .unsettling        0.000                           
+##    .distasteful       0.000                           
+##    .ugly              0.000                           
+##    .energized         0.000                           
+##    .spurredmeon       0.000                           
+##    .motivated         0.000                           
+##    .invigorated       0.000                           
+##    .deepmoved         0.000                           
+##    .touched           0.000                           
+##    .sentimental       0.000                           
+##    .melancholic       0.000                           
+##     M1                0.000                           
+##     M2                0.000                           
+##     M3                0.000                           
+## 
+## Thresholds:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##     worried|t1        0.395    0.047    8.468    0.000
+##     worried|t2        0.796    0.051   15.614    0.000
+##     worried|t3        1.207    0.060   20.235    0.000
+##     worried|t4        1.843    0.088   20.922    0.000
+##     unsettling|t1     0.243    0.046    5.306    0.000
+##     unsettling|t2     0.659    0.049   13.421    0.000
+##     unsettling|t3     1.018    0.055   18.511    0.000
+##     unsettling|t4     1.501    0.070   21.508    0.000
+##     distasteful|t1    0.730    0.050   14.595    0.000
+##     distasteful|t2    1.111    0.057   19.443    0.000
+##     distasteful|t3    1.425    0.067   21.343    0.000
+##     distasteful|t4    1.899    0.092   20.637    0.000
+##     ugly|t1           0.765    0.051   15.141    0.000
+##     ugly|t2           1.135    0.058   19.663    0.000
+##     ugly|t3           1.443    0.067   21.393    0.000
+##     ugly|t4           1.792    0.085   21.138    0.000
+##     energized|t1     -0.126    0.045   -2.781    0.005
+##     energized|t2      0.399    0.047    8.539    0.000
+##     energized|t3      1.007    0.055   18.390    0.000
+##     energized|t4      1.543    0.072   21.550    0.000
+##     spurredmeon|t1    0.133    0.045    2.926    0.003
+##     spurredmeon|t2    0.696    0.050   14.045    0.000
+##     spurredmeon|t3    1.293    0.062   20.786    0.000
+##     spurredmeon|t4    1.843    0.088   20.922    0.000
+##     motivated|t1      0.051    0.045    1.120    0.263
+##     motivated|t2      0.557    0.048   11.599    0.000
+##     motivated|t3      1.041    0.055   18.751    0.000
+##     motivated|t4      1.611    0.075   21.548    0.000
+##     invigorated|t1   -0.015    0.045   -0.325    0.745
+##     invigorated|t2    0.445    0.047    9.468    0.000
+##     invigorated|t3    1.052    0.056   18.869    0.000
+##     invigorated|t4    1.730    0.081   21.341    0.000
+##     deepmoved|t1      0.126    0.045    2.781    0.005
+##     deepmoved|t2      0.713    0.050   14.321    0.000
+##     deepmoved|t3      1.193    0.059   20.135    0.000
+##     deepmoved|t4      1.674    0.078   21.469    0.000
+##     touched|t1        0.044    0.045    0.976    0.329
+##     touched|t2        0.580    0.048   12.022    0.000
+##     touched|t3        1.035    0.055   18.691    0.000
+##     touched|t4        1.688    0.079   21.444    0.000
+##     sentimental|t1    0.210    0.046    4.586    0.000
+##     sentimental|t2    0.726    0.050   14.527    0.000
+##     sentimental|t3    1.161    0.058   19.878    0.000
+##     sentimental|t4    1.843    0.088   20.922    0.000
+##     melancholic|t1    0.253    0.046    5.522    0.000
+##     melancholic|t2    0.809    0.051   15.815    0.000
+##     melancholic|t3    1.364    0.065   21.130    0.000
+##     melancholic|t4    1.963    0.097   20.262    0.000
+## 
+## Variances:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##    .worried           0.241                           
+##    .unsettling        0.206                           
+##    .distasteful       0.186                           
+##    .ugly              0.174                           
+##    .energized         0.148                           
+##    .spurredmeon       0.260                           
+##    .motivated         0.279                           
+##    .invigorated       0.335                           
+##    .deepmoved         0.123                           
+##    .touched           0.121                           
+##    .sentimental       0.365                           
+##    .melancholic       0.459                           
+##     M1                1.000                           
+##     M2                1.000                           
+##     M3                1.000                           
+## 
+## Scales y*:
+##                    Estimate  Std.Err  z-value  P(>|z|)
+##     worried           1.000                           
+##     unsettling        1.000                           
+##     distasteful       1.000                           
+##     ugly              1.000                           
+##     energized         1.000                           
+##     spurredmeon       1.000                           
+##     motivated         1.000                           
+##     invigorated       1.000                           
+##     deepmoved         1.000                           
+##     touched           1.000                           
+##     sentimental       1.000                           
+##     melancholic       1.000                           
+## 
+## R-Square:
+##                    Estimate
+##     worried           0.759
+##     unsettling        0.794
+##     distasteful       0.814
+##     ugly              0.826
+##     energized         0.852
+##     spurredmeon       0.740
+##     motivated         0.721
+##     invigorated       0.665
+##     deepmoved         0.877
+##     touched           0.879
+##     sentimental       0.635
+##     melancholic       0.541
+\end{verbatim}
+
+The second model fits well, the RMSEA and SRMR are higher than the
+cutoff value, however, these values are based on normal continuous data
+and it has been discussed that these are not as appropriate for
+non-normal ordinal data - as the other fitindices indicate good fit and
+the items that are loading on these factors make sense, we accept the
+model.
+
+Next we see how much variance can be explained by these three factors.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lavaan.diagram}\NormalTok{(model2.fit, }\DataTypeTok{e.size=}\FloatTok{0.055}\NormalTok{, }\DataTypeTok{errors=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{regression=}\OtherTok{TRUE}\NormalTok{)}
+\CommentTok{\#sem.graph(CFA7.modelfit)}
+\CommentTok{\#sem.diagram(CFA7.modelfit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{F1\textless{}{-}}\KeywordTok{tibble}\NormalTok{(EFA\_reduced}\OperatorTok{$}\NormalTok{worried, EFA\_reduced}\OperatorTok{$}\NormalTok{unsettling, EFA\_reduced}\OperatorTok{$}\NormalTok{distasteful, EFA\_reduced}\OperatorTok{$}\NormalTok{ugly)}
+
+\NormalTok{F2\textless{}{-}}\KeywordTok{tibble}\NormalTok{(EFA\_reduced}\OperatorTok{$}\NormalTok{sentimental, EFA\_reduced}\OperatorTok{$}\NormalTok{deepmoved, EFA\_reduced}\OperatorTok{$}\NormalTok{touched, EFA\_reduced}\OperatorTok{$}\NormalTok{melancholic)}
+
+\NormalTok{F3\textless{}{-}}\KeywordTok{tibble}\NormalTok{(EFA\_reduced}\OperatorTok{$}\NormalTok{energized, EFA\_reduced}\OperatorTok{$}\NormalTok{spurredmeon, EFA\_reduced}\OperatorTok{$}\NormalTok{invigorated, EFA\_reduced}\OperatorTok{$}\NormalTok{motivated)}
+
+\NormalTok{F1\_alpha\textless{}{-}psych}\OperatorTok{::}\KeywordTok{alpha}\NormalTok{(}\DataTypeTok{x=}\NormalTok{F1)}
+\NormalTok{F2\_alpha\textless{}{-}psych}\OperatorTok{::}\KeywordTok{alpha}\NormalTok{(}\DataTypeTok{x=}\NormalTok{F2)}
+\NormalTok{F3\_alpha\textless{}{-}psych}\OperatorTok{::}\KeywordTok{alpha}\NormalTok{(}\DataTypeTok{x=}\NormalTok{F3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{F1\_alpha}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Reliability analysis   
+## Call: psych::alpha(x = F1)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N    ase mean   sd median_r
+##       0.87      0.87    0.87      0.64   7 0.0077  1.6 0.94     0.59
+## 
+##  lower alpha upper     95% confidence boundaries
+## 0.86 0.87 0.89 
+## 
+##  Reliability if an item is dropped:
+##                         raw_alpha std.alpha G6(smc) average_r S/N alpha se
+## EFA_reduced$worried          0.84      0.85    0.81      0.66 5.7   0.0103
+## EFA_reduced$unsettling       0.83      0.84    0.79      0.63 5.1   0.0109
+## EFA_reduced$distasteful      0.83      0.83    0.78      0.63 5.1   0.0100
+## EFA_reduced$ugly             0.83      0.84    0.78      0.63 5.1   0.0099
+##                          var.r med.r
+## EFA_reduced$worried     0.0114  0.59
+## EFA_reduced$unsettling  0.0164  0.56
+## EFA_reduced$distasteful 0.0091  0.59
+## EFA_reduced$ugly        0.0087  0.59
+## 
+##  Item statistics 
+##                           n raw.r std.r r.cor r.drop mean  sd
+## EFA_reduced$worried     765  0.85  0.84  0.76   0.72  1.7 1.1
+## EFA_reduced$unsettling  765  0.88  0.86  0.80   0.74  1.9 1.3
+## EFA_reduced$distasteful 765  0.84  0.86  0.81   0.73  1.5 1.0
+## EFA_reduced$ugly        765  0.84  0.86  0.81   0.73  1.5 1.0
+## 
+## Non missing response frequency for each item
+##                            1    2    3    4    5 miss
+## EFA_reduced$worried     0.65 0.13 0.10 0.08 0.03    0
+## EFA_reduced$unsettling  0.60 0.15 0.10 0.09 0.07    0
+## EFA_reduced$distasteful 0.77 0.10 0.06 0.05 0.03    0
+## EFA_reduced$ugly        0.78 0.09 0.05 0.04 0.04    0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{F2\_alpha}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Reliability analysis   
+## Call: psych::alpha(x = F2)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N    ase mean   sd median_r
+##       0.87      0.87    0.85      0.62 6.6 0.0076  1.8 0.97     0.59
+## 
+##  lower alpha upper     95% confidence boundaries
+## 0.86 0.87 0.89 
+## 
+##  Reliability if an item is dropped:
+##                         raw_alpha std.alpha G6(smc) average_r S/N alpha se
+## EFA_reduced$sentimental      0.85      0.84    0.81      0.64 5.4   0.0097
+## EFA_reduced$deepmoved        0.80      0.80    0.74      0.58 4.1   0.0121
+## EFA_reduced$touched          0.81      0.81    0.74      0.58 4.2   0.0121
+## EFA_reduced$melancholic      0.87      0.87    0.84      0.69 6.8   0.0081
+##                           var.r med.r
+## EFA_reduced$sentimental 0.02395  0.57
+## EFA_reduced$deepmoved   0.00354  0.55
+## EFA_reduced$touched     0.00098  0.57
+## EFA_reduced$melancholic 0.01228  0.65
+## 
+##  Item statistics 
+##                           n raw.r std.r r.cor r.drop mean  sd
+## EFA_reduced$sentimental 765  0.83  0.83  0.74   0.69  1.8 1.1
+## EFA_reduced$deepmoved   765  0.89  0.89  0.87   0.80  1.9 1.2
+## EFA_reduced$touched     765  0.89  0.89  0.87   0.79  2.0 1.2
+## EFA_reduced$melancholic 765  0.77  0.79  0.66   0.62  1.7 1.1
+## 
+## Non missing response frequency for each item
+##                            1    2    3    4    5 miss
+## EFA_reduced$sentimental 0.58 0.18 0.11 0.09 0.03    0
+## EFA_reduced$deepmoved   0.55 0.21 0.12 0.07 0.05    0
+## EFA_reduced$touched     0.52 0.20 0.13 0.10 0.05    0
+## EFA_reduced$melancholic 0.60 0.19 0.12 0.06 0.02    0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{F3\_alpha}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Reliability analysis   
+## Call: psych::alpha(x = F3)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N    ase mean sd median_r
+##       0.88      0.88    0.85      0.65 7.4 0.0071    2  1     0.67
+## 
+##  lower alpha upper     95% confidence boundaries
+## 0.87 0.88 0.89 
+## 
+##  Reliability if an item is dropped:
+##                         raw_alpha std.alpha G6(smc) average_r S/N alpha se
+## EFA_reduced$energized        0.82      0.82    0.76      0.61 4.6   0.0114
+## EFA_reduced$spurredmeon      0.84      0.84    0.80      0.64 5.4   0.0098
+## EFA_reduced$invigorated      0.87      0.87    0.82      0.69 6.6   0.0082
+## EFA_reduced$motivated        0.85      0.85    0.80      0.66 5.8   0.0092
+##                           var.r med.r
+## EFA_reduced$energized   0.00345  0.61
+## EFA_reduced$spurredmeon 0.00790  0.68
+## EFA_reduced$invigorated 0.00069  0.69
+## EFA_reduced$motivated   0.00150  0.68
+## 
+##  Item statistics 
+##                           n raw.r std.r r.cor r.drop mean  sd
+## EFA_reduced$energized   765  0.90  0.90  0.86   0.81  2.1 1.2
+## EFA_reduced$spurredmeon 765  0.85  0.86  0.80   0.75  1.8 1.1
+## EFA_reduced$invigorated 765  0.83  0.83  0.74   0.69  2.0 1.2
+## EFA_reduced$motivated   765  0.85  0.85  0.78   0.73  2.0 1.2
+## 
+## Non missing response frequency for each item
+##                            1    2    3    4    5 miss
+## EFA_reduced$energized   0.45 0.21 0.19 0.10 0.06    0
+## EFA_reduced$spurredmeon 0.55 0.20 0.15 0.07 0.03    0
+## EFA_reduced$invigorated 0.49 0.18 0.18 0.10 0.04    0
+## EFA_reduced$motivated   0.52 0.19 0.14 0.10 0.05    0
+\end{verbatim}
+
+Internal consistncy for all factors is very high. (not really
+surprising)
+
+\hypertarget{the-factor-scores-are-extracted-using-the-weighted-least-score-mean-and-variance-wlsmv-estimation-method.}{%
+\subsection{The factor scores are extracted using the weighted least
+score mean and variance (WLSMV) estimation
+method.}\label{the-factor-scores-are-extracted-using-the-weighted-least-score-mean-and-variance-wlsmv-estimation-method.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{CFA\_factorscores\textless{}{-}}\KeywordTok{lavPredict}\NormalTok{(model2.fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# loop over factors}
+\NormalTok{idxframe\textless{}{-}}\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{as.integer}\NormalTok{(}\KeywordTok{rownames}\NormalTok{(data)))}
+\NormalTok{idx \textless{}{-}}\StringTok{ }\NormalTok{idxframe[,}\DecValTok{1}\NormalTok{]}
+\ControlFlowTok{for}\NormalTok{ (fs }\ControlFlowTok{in} \KeywordTok{colnames}\NormalTok{(CFA\_factorscores)) \{}
+\NormalTok{  data[idx, fs] \textless{}{-}}\StringTok{ }\NormalTok{CFA\_factorscores[ , fs]}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Next step: z-standardise all variables (factors and predictors)
+
+\hypertarget{step-4-hierarchichal-linear-models-for-all-3-factors}{%
+\section{Step 4: Hierarchichal Linear Models for all 3
+Factors}\label{step-4-hierarchichal-linear-models-for-all-3-factors}}
+
+\hypertarget{subjective-ratings-factor-1}{%
+\subsection{Subjective Ratings Factor
+1}\label{subjective-ratings-factor-1}}
+
+{[}predictors with t \textless{} 1 were excluded{]}
+
+\hypertarget{result-factor-1-can-be-be-predicted-by-more-neutral-as-well-as-happy-and-fearful-facial-expressions.}{%
+\subsubsection{Result: Factor 1 can be be predicted by: more neutral as
+well as happy and fearful facial
+expressions.}\label{result-factor-1-can-be-be-predicted-by-more-neutral-as-well-as-happy-and-fearful-facial-expressions.}}
+
+\hypertarget{full-model}{%
+\section{full model}\label{full-model}}
+
+Anova Factor 1
+
+\begin{verbatim}
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                        Sum Sq Mean Sq NumDF  DenDF F value    Pr(>F)    
+## Z_Neutral_FaceMeanDIV 12.3461 12.3461     1 664.47 15.4837 9.198e-05 ***
+## Z_Sadness_FaceMeanDIV  2.9163  2.9163     1 664.88  3.6575   0.05625 .  
+## Z_Anger_FaceMeanDIV   17.0421 17.0421     1 666.44 21.3732 4.541e-06 ***
+## Z_Fear_FaceMeanDIV     3.8646  3.8646     1 710.93  4.8467   0.02802 *  
+## Z_Disgust_FaceMeanDIV  1.3799  1.3799     1 674.55  1.7306   0.18878    
+## Z_meanAccelB           3.2414  3.2414     1 543.78  4.0651   0.04427 *  
+## Z_meanSUM_N_IncAB     14.9667 14.9667     1 683.72 18.7703 1.696e-05 ***
+## Z_meanSUM_IncAB        1.2689  1.2689     1 688.29  1.5914   0.20756    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Model Summary Factor 1
+
+\begin{verbatim}
+## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+##   method [lmerModLmerTest]
+## Formula: 
+## ZCFA_F1 ~ Z_Neutral_FaceMeanDIV + Z_Sadness_FaceMeanDIV + Z_Anger_FaceMeanDIV +  
+##     Z_Fear_FaceMeanDIV + Z_Disgust_FaceMeanDIV + Z_meanAccelB +  
+##     Z_meanSUM_N_IncAB + Z_meanSUM_IncAB + (1 | ID)
+##    Data: ZnewFA_data
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1932.8   1983.1   -955.4   1910.8      700 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.7268 -0.7681 -0.2315  0.6985  3.6620 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  ID       (Intercept) 0.1126   0.3355  
+##  Residual             0.7974   0.8929  
+## Number of obs: 711, groups:  ID, 48
+## 
+## Fixed effects:
+##                         Estimate Std. Error         df t value Pr(>|t|)    
+## (Intercept)            -0.005803   0.058933  47.524157  -0.098   0.9220    
+## Z_Neutral_FaceMeanDIV  -0.135770   0.034504 664.468854  -3.935 9.20e-05 ***
+## Z_Sadness_FaceMeanDIV  -0.065990   0.034505 664.879087  -1.912   0.0562 .  
+## Z_Anger_FaceMeanDIV     0.180443   0.039031 666.444099   4.623 4.54e-06 ***
+## Z_Fear_FaceMeanDIV     -0.085672   0.038915 710.931512  -2.202   0.0280 *  
+## Z_Disgust_FaceMeanDIV  -0.054546   0.041463 674.550386  -1.316   0.1888    
+## Z_meanAccelB            0.079999   0.039678 543.780898   2.016   0.0443 *  
+## Z_meanSUM_N_IncAB      -0.163641   0.037771 683.715305  -4.332 1.70e-05 ***
+## Z_meanSUM_IncAB        -0.041952   0.033256 688.287603  -1.261   0.2076    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Z_N_FM Z_S_FM Z_A_FM Z_F_FM Z_D_FM Z_mnAB Z_SUM_N
+## Z_Ntr_FMDIV  0.001                                                  
+## Z_Sdn_FMDIV  0.000  0.146                                           
+## Z_Ang_FMDIV  0.000  0.102  0.186                                    
+## Z_Fr_FcMDIV -0.011  0.151  0.014  0.025                             
+## Z_Dsg_FMDIV -0.005 -0.065 -0.090 -0.447 -0.334                      
+## Z_meanAcclB -0.004  0.005  0.061  0.089 -0.006 -0.044               
+## Z_SUM_N_IAB -0.013 -0.008  0.034 -0.053 -0.025  0.060  0.054        
+## Z_mnSUM_IAB -0.001 -0.024 -0.050 -0.102  0.002  0.047  0.012 -0.015
+\end{verbatim}
+
+Confidence Intervals Factor 1
+
+\begin{verbatim}
+##                              2.5 %       97.5 %
+## .sig01                          NA           NA
+## .sigma                          NA           NA
+## (Intercept)           -0.121309795  0.109703764
+## Z_Neutral_FaceMeanDIV -0.203396622 -0.068144160
+## Z_Sadness_FaceMeanDIV -0.133618816  0.001639265
+## Z_Anger_FaceMeanDIV    0.103944486  0.256941522
+## Z_Fear_FaceMeanDIV    -0.161943499 -0.009400263
+## Z_Disgust_FaceMeanDIV -0.135811644  0.026719781
+## Z_meanAccelB           0.002231894  0.157765349
+## Z_meanSUM_N_IncAB     -0.237671038 -0.089611865
+## Z_meanSUM_IncAB       -0.107132993  0.023228185
+\end{verbatim}
+
+Anova Factor 2
+
+\begin{verbatim}
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                        Sum Sq Mean Sq NumDF  DenDF F value   Pr(>F)   
+## Z_Neutral_FaceMeanDIV  7.2296  7.2296     1 664.03 10.2690 0.001418 **
+## Z_Happy_FaceMeanDIV    4.5122  4.5122     1 663.58  6.4092 0.011583 * 
+## Z_Sadness_FaceMeanDIV  4.1735  4.1735     1 663.47  5.9280 0.015164 * 
+## Z_Surprise_FaceMeanDIV 1.1976  1.1976     1 668.02  1.7011 0.192588   
+## Z_Fear_FaceMeanDIV     2.1611  2.1611     1 667.55  3.0696 0.080226 . 
+## Z_meangsrB             2.3411  2.3411     1 110.87  3.3254 0.070913 . 
+## Z_meanSUM_N_IncAB      5.2355  5.2355     1 710.79  7.4365 0.006549 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Model Summary Factor 2
+
+\begin{verbatim}
+## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+##   method [lmerModLmerTest]
+## Formula: 
+## ZCFA_F2 ~ Z_Neutral_FaceMeanDIV + Z_Happy_FaceMeanDIV + Z_Sadness_FaceMeanDIV +  
+##     Z_Surprise_FaceMeanDIV + Z_Fear_FaceMeanDIV + Z_meangsrB +  
+##     Z_meanSUM_N_IncAB + (1 | ID)
+##    Data: ZnewFA_data
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1874.8   1920.5   -927.4   1854.8      701 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -2.3542 -0.7126 -0.1228  0.6387  3.0154 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  ID       (Intercept) 0.2421   0.4920  
+##  Residual             0.7040   0.8391  
+## Number of obs: 711, groups:  ID, 48
+## 
+## Fixed effects:
+##                         Estimate Std. Error        df t value Pr(>|t|)   
+## (Intercept)              0.01248    0.07782  47.96513   0.160  0.87326   
+## Z_Neutral_FaceMeanDIV    0.10432    0.03255 664.02853   3.205  0.00142 **
+## Z_Happy_FaceMeanDIV      0.08179    0.03231 663.57942   2.532  0.01158 * 
+## Z_Sadness_FaceMeanDIV   -0.07841    0.03220 663.46772  -2.435  0.01516 * 
+## Z_Surprise_FaceMeanDIV  -0.12649    0.09698 668.01881  -1.304  0.19259   
+## Z_Fear_FaceMeanDIV       0.17048    0.09731 667.55044   1.752  0.08023 . 
+## Z_meangsrB               0.12175    0.06677 110.87211   1.824  0.07091 . 
+## Z_meanSUM_N_IncAB        0.09954    0.03650 710.79345   2.727  0.00655 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Z_N_FM Z_H_FM Z_Sd_FMDIV Z_Sr_FMDIV Z_F_FM Z_mngB
+## Z_Ntr_FMDIV  0.002                                                  
+## Z_Hpp_FMDIV  0.000  0.103                                           
+## Z_Sdn_FMDIV  0.000  0.144  0.154                                    
+## Z_Srp_FMDIV -0.001 -0.093 -0.069 -0.022                             
+## Z_Fr_FcMDIV -0.004  0.136  0.034  0.018     -0.932                  
+## Z_meangsrB   0.049  0.015 -0.008  0.010      0.041     -0.027       
+## Z_SUM_N_IAB -0.008 -0.010 -0.045  0.035      0.048     -0.048  0.010
+\end{verbatim}
+
+Confidence Intervals Factor 2
+
+\begin{verbatim}
+##                               2.5 %      97.5 %
+## .sig01                           NA          NA
+## .sigma                           NA          NA
+## (Intercept)            -0.140037897  0.16499808
+## Z_Neutral_FaceMeanDIV   0.040516357  0.16812848
+## Z_Happy_FaceMeanDIV     0.018469999  0.14511892
+## Z_Sadness_FaceMeanDIV  -0.141524891 -0.01528993
+## Z_Surprise_FaceMeanDIV -0.316570820  0.06358946
+## Z_Fear_FaceMeanDIV     -0.020232568  0.36120160
+## Z_meangsrB             -0.009107525  0.25261023
+## Z_meanSUM_N_IncAB       0.027998874  0.17108667
+\end{verbatim}
+
+Anova Factor 3
+
+\begin{verbatim}
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                        Sum Sq Mean Sq NumDF  DenDF F value   Pr(>F)    
+## Z_Neutral_FaceMeanDIV  1.6131  1.6131     1 664.68  2.2375 0.135172    
+## Z_Sadness_FaceMeanDIV  6.4852  6.4852     1 661.96  8.9958 0.002808 ** 
+## Z_Anger_FaceMeanDIV    3.4769  3.4769     1 670.15  4.8229 0.028426 *  
+## Z_meanAccelB          11.5900 11.5900     1 695.55 16.0768 6.74e-05 ***
+## Z_meangsrB             5.0442  5.0442     1 113.30  6.9970 0.009324 ** 
+## Z_meanSUM_N_IncAB      1.0026  1.0026     1 710.83  1.3907 0.238678    
+## Z_meanbvpAmpB          0.9981  0.9981     1 245.06  1.3845 0.240472    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Model Summary Factor 3
+
+\begin{verbatim}
+## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+##   method [lmerModLmerTest]
+## Formula: 
+## ZCFA_F3 ~ Z_Neutral_FaceMeanDIV + Z_Sadness_FaceMeanDIV + Z_Anger_FaceMeanDIV +  
+##     Z_meanAccelB + Z_meangsrB + Z_meanSUM_N_IncAB + Z_meanbvpAmpB +  
+##     (1 | ID)
+##    Data: ZnewFA_data
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1891.0   1936.7   -935.5   1871.0      701 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.8359 -0.7536 -0.1693  0.6822  3.3718 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  ID       (Intercept) 0.2437   0.4937  
+##  Residual             0.7209   0.8491  
+## Number of obs: 711, groups:  ID, 48
+## 
+## Fixed effects:
+##                        Estimate Std. Error        df t value Pr(>|t|)    
+## (Intercept)             0.01681    0.07827  45.71923   0.215  0.83094    
+## Z_Neutral_FaceMeanDIV   0.04857    0.03247 664.67838   1.496  0.13517    
+## Z_Sadness_FaceMeanDIV   0.09794    0.03265 661.96395   2.999  0.00281 ** 
+## Z_Anger_FaceMeanDIV    -0.07206    0.03281 670.15326  -2.196  0.02843 *  
+## Z_meanAccelB           -0.16075    0.04009 695.54989  -4.010 6.74e-05 ***
+## Z_meangsrB              0.18146    0.06860 113.30270   2.645  0.00932 ** 
+## Z_meanSUM_N_IncAB       0.04353    0.03691 710.82965   1.179  0.23868    
+## Z_meanbvpAmpB          -0.06677    0.05674 245.05872  -1.177  0.24047    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Z_N_FM Z_S_FM Z_A_FM Z_mnAcB Z_mngB Z_SUM_
+## Z_Ntr_FMDIV  0.002                                           
+## Z_Sdn_FMDIV  0.000  0.143                                    
+## Z_Ang_FMDIV -0.002  0.098  0.160                             
+## Z_meanAcclB -0.010  0.005  0.060  0.078                      
+## Z_meangsrB   0.056  0.010  0.008  0.014 -0.137               
+## Z_SUM_N_IAB -0.009 -0.004  0.039 -0.035  0.045   0.003       
+## Z_mnbvpAmpB -0.044  0.036 -0.010 -0.030  0.002  -0.149 -0.004
+\end{verbatim}
+
+Confidence Intervals Factor 3
+
+\begin{verbatim}
+##                             2.5 %       97.5 %
+## .sig01                         NA           NA
+## .sigma                         NA           NA
+## (Intercept)           -0.13659685  0.170207738
+## Z_Neutral_FaceMeanDIV -0.01507197  0.112221709
+## Z_Sadness_FaceMeanDIV  0.03393778  0.161936328
+## Z_Anger_FaceMeanDIV   -0.13637740 -0.007748865
+## Z_meanAccelB          -0.23932729 -0.082172105
+## Z_meangsrB             0.04700638  0.315918367
+## Z_meanSUM_N_IncAB     -0.02881421  0.115867488
+## Z_meanbvpAmpB         -0.17797835  0.044446066
+\end{verbatim}
+
+Anova Happy
+
+\begin{verbatim}
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                         Sum Sq Mean Sq NumDF  DenDF F value    Pr(>F)    
+## Z_Neutral_FaceMeanDIV  14.6701 14.6701     1 660.85 17.8153 2.775e-05 ***
+## Z_Happy_FaceMeanDIV     5.1896  5.1896     1 662.71  6.3023  0.012295 *  
+## Z_Anger_FaceMeanDIV     7.7156  7.7156     1 662.66  9.3698  0.002295 ** 
+## Z_Surprise_FaceMeanDIV  2.7063  2.7063     1 670.27  3.2865  0.070297 .  
+## Z_Fear_FaceMeanDIV      3.2556  3.2556     1 669.85  3.9536  0.047178 *  
+## Z_Disgust_FaceMeanDIV   1.2699  1.2699     1 670.02  1.5422  0.214730    
+## Z_meanAccelB            1.3408  1.3408     1 538.44  1.6283  0.202490    
+## Z_meanSUM_N_IncAB      19.6465 19.6465     1 684.22 23.8586 1.292e-06 ***
+## Z_meanSUM_IncAB         1.5174  1.5174     1 689.65  1.8428  0.175071    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Model Summary Happy
+
+\begin{verbatim}
+## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+##   method [lmerModLmerTest]
+## Formula: Z_basic_happiness ~ Z_Neutral_FaceMeanDIV + Z_Happy_FaceMeanDIV +  
+##     Z_Anger_FaceMeanDIV + Z_Surprise_FaceMeanDIV + Z_Fear_FaceMeanDIV +  
+##     Z_Disgust_FaceMeanDIV + Z_meanAccelB + Z_meanSUM_N_IncAB +  
+##     Z_meanSUM_IncAB + (1 | ID)
+##    Data: ZnewFA_data
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1958.9   2013.7   -967.4   1934.9      699 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.7739 -0.7425 -0.2614  0.6895  2.6974 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  ID       (Intercept) 0.1204   0.3470  
+##  Residual             0.8235   0.9074  
+## Number of obs: 711, groups:  ID, 48
+## 
+## Fixed effects:
+##                          Estimate Std. Error         df t value Pr(>|t|)    
+## (Intercept)              0.008793   0.060610  44.322893   0.145   0.8853    
+## Z_Neutral_FaceMeanDIV    0.147528   0.034952 660.853068   4.221 2.77e-05 ***
+## Z_Happy_FaceMeanDIV      0.088494   0.035250 662.712361   2.510   0.0123 *  
+## Z_Anger_FaceMeanDIV     -0.119323   0.038981 662.662430  -3.061   0.0023 ** 
+## Z_Surprise_FaceMeanDIV  -0.200698   0.110707 670.269023  -1.813   0.0703 .  
+## Z_Fear_FaceMeanDIV       0.218045   0.109661 669.853962   1.988   0.0472 *  
+## Z_Disgust_FaceMeanDIV    0.053289   0.042911 670.017085   1.242   0.2147    
+## Z_meanAccelB             0.051786   0.040584 538.436306   1.276   0.2025    
+## Z_meanSUM_N_IncAB        0.188197   0.038529 684.218906   4.885 1.29e-06 ***
+## Z_meanSUM_IncAB          0.048076   0.035415 689.649963   1.357   0.1751    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Z_N_FM Z_H_FM Z_A_FM Z_S_FM Z_F_FM Z_D_FM Z_mnAB Z_SUM_N
+## Z_Ntr_FMDIV  0.001                                                         
+## Z_Hpp_FMDIV  0.001  0.088                                                  
+## Z_Ang_FMDIV  0.000  0.078  0.015                                           
+## Z_Srp_FMDIV -0.002 -0.088 -0.033 -0.007                                    
+## Z_Fr_FcMDIV -0.003  0.136  0.026  0.014 -0.933                             
+## Z_Dsg_FMDIV -0.005 -0.056 -0.171 -0.432 -0.114 -0.010                      
+## Z_meanAcclB -0.004 -0.007 -0.091  0.078 -0.057  0.051 -0.015               
+## Z_SUM_N_IAB -0.013 -0.022 -0.062 -0.062  0.048 -0.053  0.067  0.054        
+## Z_mnSUM_IAB -0.001  0.008 -0.013 -0.088 -0.301  0.282  0.078  0.033 -0.026
+\end{verbatim}
+
+Confidence Intervals Happy
+
+\begin{verbatim}
+##                               2.5 %      97.5 %
+## .sig01                           NA          NA
+## .sigma                           NA          NA
+## (Intercept)            -0.110000010  0.12758552
+## Z_Neutral_FaceMeanDIV   0.079022525  0.21603362
+## Z_Happy_FaceMeanDIV     0.019404255  0.15758320
+## Z_Anger_FaceMeanDIV    -0.195724676 -0.04292040
+## Z_Surprise_FaceMeanDIV -0.417679353  0.01628299
+## Z_Fear_FaceMeanDIV      0.003114475  0.43297604
+## Z_Disgust_FaceMeanDIV  -0.030815771  0.13739416
+## Z_meanAccelB           -0.027755899  0.13132851
+## Z_meanSUM_N_IncAB       0.112681161  0.26371294
+## Z_meanSUM_IncAB        -0.021336881  0.11748796
+\end{verbatim}
+
+Anova Sad
+
+\begin{verbatim}
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                        Sum Sq Mean Sq NumDF  DenDF F value   Pr(>F)   
+## Z_Neutral_FaceMeanDIV  2.6455  2.6455     1 663.47  3.1763 0.075171 . 
+## Z_Happy_FaceMeanDIV    6.2771  6.2771     1 667.83  7.5365 0.006209 **
+## Z_Sadness_FaceMeanDIV  4.1368  4.1368     1 661.31  4.9668 0.026174 * 
+## Z_Surprise_FaceMeanDIV 5.6898  5.6898     1 674.10  6.8315 0.009156 **
+## Z_Fear_FaceMeanDIV     5.8971  5.8971     1 671.52  7.0803 0.007980 **
+## Z_meanAccelB           7.4508  7.4508     1 538.03  8.9457 0.002909 **
+## Z_meangsrB             5.8344  5.8344     1  76.47  7.0050 0.009865 **
+## Z_meanSUM_N_IncAB      1.0591  1.0591     1 675.91  1.2716 0.259863   
+## Z_meanSUM_IncAB        1.6643  1.6643     1 692.78  1.9982 0.157935   
+## Z_meanbvpAmpB          2.0899  2.0899     1 122.26  2.5092 0.115765   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Model Summary Sad
+
+\begin{verbatim}
+## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+##   method [lmerModLmerTest]
+## Formula: Z_basic_sadness ~ Z_Neutral_FaceMeanDIV + Z_Happy_FaceMeanDIV +  
+##     Z_Sadness_FaceMeanDIV + Z_Surprise_FaceMeanDIV + Z_Fear_FaceMeanDIV +  
+##     Z_meanAccelB + Z_meangsrB + Z_meanSUM_N_IncAB + Z_meanSUM_IncAB +  
+##     Z_meanbvpAmpB + (1 | ID)
+##    Data: ZnewFA_data
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1962.1   2021.5   -968.1   1936.1      698 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.9149 -0.6385 -0.3812  0.4127  3.3369 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  ID       (Intercept) 0.09807  0.3132  
+##  Residual             0.83289  0.9126  
+## Number of obs: 711, groups:  ID, 48
+## 
+## Fixed effects:
+##                          Estimate Std. Error         df t value Pr(>|t|)   
+## (Intercept)             -0.004015   0.056934  45.020956  -0.071  0.94409   
+## Z_Neutral_FaceMeanDIV   -0.063135   0.035425 663.472927  -1.782  0.07517 . 
+## Z_Happy_FaceMeanDIV     -0.097101   0.035370 667.827386  -2.745  0.00621 **
+## Z_Sadness_FaceMeanDIV    0.078121   0.035053 661.308285   2.229  0.02617 * 
+## Z_Surprise_FaceMeanDIV   0.288686   0.110451 674.098872   2.614  0.00916 **
+## Z_Fear_FaceMeanDIV      -0.293422   0.110272 671.518139  -2.661  0.00798 **
+## Z_meanAccelB            -0.121967   0.040779 538.034950  -2.991  0.00291 **
+## Z_meangsrB               0.148531   0.056119  76.466260   2.647  0.00986 **
+## Z_meanSUM_N_IncAB       -0.043283   0.038383 675.910999  -1.128  0.25986   
+## Z_meanSUM_IncAB         -0.050035   0.035396 692.777494  -1.414  0.15794   
+## Z_meanbvpAmpB           -0.079770   0.050358 122.258052  -1.584  0.11577   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Z_N_FM Z_H_FM Z_Sd_FMDIV Z_Sr_FMDIV Z_F_FM Z_mnAcB Z_mngB
+## Z_Ntr_FMDIV -0.001                                                          
+## Z_Hpp_FMDIV -0.003  0.106                                                   
+## Z_Sdn_FMDIV -0.001  0.143  0.151                                            
+## Z_Srp_FMDIV -0.001 -0.092 -0.058 -0.014                                     
+## Z_Fr_FcMDIV -0.004  0.135  0.026  0.011     -0.942                          
+## Z_meanAcclB -0.015 -0.009 -0.082  0.032     -0.060      0.055               
+## Z_meangsrB   0.065  0.005 -0.004 -0.001      0.039     -0.030 -0.182        
+## Z_SUM_N_IAB -0.010 -0.011 -0.048  0.037      0.055     -0.053  0.052   0.052
+## Z_mnSUM_IAB  0.000  0.011 -0.009 -0.029     -0.298      0.283  0.036   0.006
+## Z_mnbvpAmpB -0.057  0.040  0.081  0.009      0.017     -0.006  0.007  -0.177
+##             Z_SUM_N Z_SUM_I
+## Z_Ntr_FMDIV                
+## Z_Hpp_FMDIV                
+## Z_Sdn_FMDIV                
+## Z_Srp_FMDIV                
+## Z_Fr_FcMDIV                
+## Z_meanAcclB                
+## Z_meangsrB                 
+## Z_SUM_N_IAB                
+## Z_mnSUM_IAB -0.036         
+## Z_mnbvpAmpB -0.018  -0.017
+\end{verbatim}
+
+Confidence Intervals Sad
+
+\begin{verbatim}
+##                               2.5 %       97.5 %
+## .sig01                           NA           NA
+## .sigma                           NA           NA
+## (Intercept)            -0.115604011  0.107574010
+## Z_Neutral_FaceMeanDIV  -0.132566804  0.006296574
+## Z_Happy_FaceMeanDIV    -0.166425241 -0.027776534
+## Z_Sadness_FaceMeanDIV   0.009417785  0.146824560
+## Z_Surprise_FaceMeanDIV  0.072206745  0.505166140
+## Z_Fear_FaceMeanDIV     -0.509551689 -0.077291560
+## Z_meanAccelB           -0.201892457 -0.042041905
+## Z_meangsrB              0.038539082  0.258522127
+## Z_meanSUM_N_IncAB      -0.118512323  0.031946219
+## Z_meanSUM_IncAB        -0.119408764  0.019339732
+## Z_meanbvpAmpB          -0.178469295  0.018930161
+\end{verbatim}
+
+Anova Anger
+
+\begin{verbatim}
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                       Sum Sq Mean Sq NumDF  DenDF F value    Pr(>F)    
+## Z_Neutral_FaceMeanDIV 9.9513  9.9513     1 667.29 11.4209 0.0007685 ***
+## Z_Sadness_FaceMeanDIV 2.5414  2.5414     1 664.08  2.9167 0.0881343 .  
+## Z_Anger_FaceMeanDIV   2.0697  2.0697     1 676.33  2.3754 0.1237278    
+## Z_meanAccelB          2.0352  2.0352     1 471.42  2.3358 0.1270996    
+## Z_meangsrB            1.2052  1.2052     1  70.85  1.3831 0.2435031    
+## Z_meanSUM_N_IncAB     3.9514  3.9514     1 639.13  4.5350 0.0335901 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Model Summary Anger
+
+\begin{verbatim}
+## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+##   method [lmerModLmerTest]
+## Formula: Z_basic_anger ~ Z_Neutral_FaceMeanDIV + Z_Sadness_FaceMeanDIV +  
+##     Z_Anger_FaceMeanDIV + Z_meanAccelB + Z_meangsrB + Z_meanSUM_N_IncAB +  
+##     (1 | ID)
+##    Data: ZnewFA_data
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1975.3   2016.4   -978.7   1957.3      702 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.3686 -0.4636 -0.2622 -0.0463  5.1998 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  ID       (Intercept) 0.06978  0.2642  
+##  Residual             0.87132  0.9334  
+## Number of obs: 711, groups:  ID, 48
+## 
+## Fixed effects:
+##                        Estimate Std. Error        df t value Pr(>|t|)    
+## (Intercept)            -0.01457    0.05189  46.15266  -0.281 0.780080    
+## Z_Neutral_FaceMeanDIV  -0.12037    0.03562 667.28806  -3.379 0.000769 ***
+## Z_Sadness_FaceMeanDIV  -0.06126    0.03587 664.08488  -1.708 0.088134 .  
+## Z_Anger_FaceMeanDIV     0.05532    0.03589 676.33278   1.541 0.123728    
+## Z_meanAccelB            0.06197    0.04054 471.41738   1.528 0.127100    
+## Z_meangsrB              0.06063    0.05156  70.85281   1.176 0.243503    
+## Z_meanSUM_N_IncAB      -0.08212    0.03856 639.12913  -2.130 0.033590 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Z_N_FM Z_S_FM Z_A_FM Z_mnAB Z_mngB
+## Z_Ntr_FMDIV  0.003                                   
+## Z_Sdn_FMDIV -0.001  0.144                            
+## Z_Ang_FMDIV -0.004  0.103  0.159                     
+## Z_meanAcclB -0.017  0.003  0.055  0.074              
+## Z_meangsrB   0.057  0.010 -0.001  0.000 -0.194       
+## Z_SUM_N_IAB -0.011 -0.003  0.039 -0.030  0.052  0.064
+\end{verbatim}
+
+Confidence Intervals Anger
+
+\begin{verbatim}
+##                             2.5 %       97.5 %
+## .sig01                         NA           NA
+## .sigma                         NA           NA
+## (Intercept)           -0.11628642  0.087137104
+## Z_Neutral_FaceMeanDIV -0.19018074 -0.050560338
+## Z_Sadness_FaceMeanDIV -0.13155991  0.009043583
+## Z_Anger_FaceMeanDIV   -0.01502980  0.125670908
+## Z_meanAccelB          -0.01749994  0.141430052
+## Z_meangsrB            -0.04041384  0.161679153
+## Z_meanSUM_N_IncAB     -0.15769636 -0.006539513
+\end{verbatim}
+
+Anova Surprise
+
+\begin{verbatim}
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                       Sum Sq Mean Sq NumDF  DenDF F value  Pr(>F)  
+## Z_Happy_FaceMeanDIV   1.8870  1.8870     1 661.23  2.6388 0.10476  
+## Z_Sadness_FaceMeanDIV 3.7425  3.7425     1 661.22  5.2335 0.02247 *
+## Z_Anger_FaceMeanDIV   1.6955  1.6955     1 663.00  2.3710 0.12409  
+## Z_Fear_FaceMeanDIV    1.4953  1.4953     1 709.91  2.0910 0.14861  
+## Z_meangsrB            1.5613  1.5613     1 113.14  2.1834 0.14229  
+## Z_meanbvpRateB        0.9656  0.9656     1 447.67  1.3502 0.24585  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Model Summary Surprise
+
+\begin{verbatim}
+## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+##   method [lmerModLmerTest]
+## Formula: Z_basic_surprise ~ Z_Happy_FaceMeanDIV + Z_Sadness_FaceMeanDIV +  
+##     Z_Anger_FaceMeanDIV + Z_Fear_FaceMeanDIV + Z_meangsrB + Z_meanbvpRateB +  
+##     (1 | ID)
+##    Data: ZnewFA_data
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1888.8   1929.9   -935.4   1870.8      702 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -2.2176 -0.6149 -0.2438  0.5933  3.4944 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  ID       (Intercept) 0.2771   0.5264  
+##  Residual             0.7151   0.8456  
+## Number of obs: 711, groups:  ID, 48
+## 
+## Fixed effects:
+##                        Estimate Std. Error        df t value Pr(>|t|)  
+## (Intercept)             0.01177    0.08248  45.80735   0.143   0.8872  
+## Z_Happy_FaceMeanDIV     0.05254    0.03235 661.23211   1.624   0.1048  
+## Z_Sadness_FaceMeanDIV  -0.07415    0.03241 661.21789  -2.288   0.0225 *
+## Z_Anger_FaceMeanDIV     0.05047    0.03278 663.00470   1.540   0.1241  
+## Z_Fear_FaceMeanDIV      0.05145    0.03558 709.90961   1.446   0.1486  
+## Z_meangsrB              0.10286    0.06961 113.14051   1.478   0.1423  
+## Z_meanbvpRateB          0.05645    0.04858 447.67304   1.162   0.2459  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Z_H_FM Z_S_FM Z_A_FM Z_F_FM Z_mngB
+## Z_Hpp_FMDIV -0.001                                   
+## Z_Sdn_FMDIV  0.000  0.134                            
+## Z_Ang_FMDIV -0.001 -0.050  0.140                     
+## Z_Fr_FcMDIV -0.013 -0.090 -0.044 -0.139              
+## Z_meangsrB   0.048 -0.008  0.011  0.016  0.029       
+## Z_menbvpRtB -0.007 -0.006  0.001  0.002  0.002 -0.072
+\end{verbatim}
+
+Confidence Intervals Surprise
+
+\begin{verbatim}
+##                             2.5 %      97.5 %
+## .sig01                         NA          NA
+## .sigma                         NA          NA
+## (Intercept)           -0.14989358  0.17342572
+## Z_Happy_FaceMeanDIV   -0.01085286  0.11593915
+## Z_Sadness_FaceMeanDIV -0.13768557 -0.01062313
+## Z_Anger_FaceMeanDIV   -0.01377143  0.11470694
+## Z_Fear_FaceMeanDIV    -0.01828652  0.12119293
+## Z_meangsrB            -0.03357689  0.23929512
+## Z_meanbvpRateB        -0.03876176  0.15165256
+\end{verbatim}
+
+Anova Fear
+
+\begin{verbatim}
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                        Sum Sq Mean Sq NumDF  DenDF F value    Pr(>F)    
+## Z_Neutral_FaceMeanDIV  7.7500  7.7500     1 667.85  9.2198  0.002487 ** 
+## Z_Sadness_FaceMeanDIV  1.9339  1.9339     1 664.80  2.3007  0.129790    
+## Z_Anger_FaceMeanDIV   24.2507 24.2507     1 665.98 28.8498 1.082e-07 ***
+## Z_Disgust_FaceMeanDIV  4.7043  4.7043     1 702.00  5.5964  0.018268 *  
+## Z_meanAccelB           1.2849  1.2849     1 474.95  1.5286  0.216934    
+## Z_meanSUM_N_IncAB      8.3839  8.3839     1 653.40  9.9739  0.001661 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Model Summary Fear
+
+\begin{verbatim}
+## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+##   method [lmerModLmerTest]
+## Formula: Z_basic_fear ~ Z_Neutral_FaceMeanDIV + Z_Sadness_FaceMeanDIV +  
+##     Z_Anger_FaceMeanDIV + Z_Disgust_FaceMeanDIV + Z_meanAccelB +  
+##     Z_meanSUM_N_IncAB + (1 | ID)
+##    Data: ZnewFA_data
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1956.2   1997.3   -969.1   1938.2      702 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.7696 -0.6384 -0.3153  0.3404  3.2786 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  ID       (Intercept) 0.08522  0.2919  
+##  Residual             0.84058  0.9168  
+## Number of obs: 711, groups:  ID, 48
+## 
+## Fixed effects:
+##                         Estimate Std. Error         df t value Pr(>|t|)    
+## (Intercept)            -0.009215   0.054436  47.053162  -0.169  0.86630    
+## Z_Neutral_FaceMeanDIV  -0.106261   0.034996 667.852563  -3.036  0.00249 ** 
+## Z_Sadness_FaceMeanDIV  -0.053656   0.035374 664.804076  -1.517  0.12979    
+## Z_Anger_FaceMeanDIV     0.214005   0.039843 665.979816   5.371 1.08e-07 ***
+## Z_Disgust_FaceMeanDIV  -0.094448   0.039924 702.003439  -2.366  0.01827 *  
+## Z_meanAccelB            0.049187   0.039783 474.948097   1.236  0.21693    
+## Z_meanSUM_N_IncAB      -0.120767   0.038240 653.403730  -3.158  0.00166 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Z_N_FM Z_S_FM Z_A_FM Z_D_FM Z_mnAB
+## Z_Ntr_FMDIV  0.002                                   
+## Z_Sdn_FMDIV  0.000  0.144                            
+## Z_Ang_FMDIV  0.001  0.097  0.181                     
+## Z_Dsg_FMDIV -0.008 -0.013 -0.089 -0.465              
+## Z_meanAcclB -0.005  0.006  0.061  0.089 -0.047       
+## Z_SUM_N_IAB -0.014 -0.005  0.034 -0.053  0.056  0.059
+\end{verbatim}
+
+Confidence Intervals Fear
+
+\begin{verbatim}
+##                            2.5 %      97.5 %
+## .sig01                        NA          NA
+## .sigma                        NA          NA
+## (Intercept)           -0.1159067  0.09747674
+## Z_Neutral_FaceMeanDIV -0.1748512 -0.03767111
+## Z_Sadness_FaceMeanDIV -0.1229888  0.01567637
+## Z_Anger_FaceMeanDIV    0.1359139  0.29209549
+## Z_Disgust_FaceMeanDIV -0.1726986 -0.01619780
+## Z_meanAccelB          -0.0287871  0.12716029
+## Z_meanSUM_N_IncAB     -0.1957153 -0.04581836
+\end{verbatim}
+
+Anova Disgust
+
+\begin{verbatim}
+## Type III Analysis of Variance Table with Satterthwaite's method
+##                       Sum Sq Mean Sq NumDF  DenDF F value   Pr(>F)   
+## Z_Neutral_FaceMeanDIV 5.7876  5.7876     1 664.73  6.4745 0.011168 * 
+## Z_Sadness_FaceMeanDIV 3.7038  3.7038     1 665.08  4.1433 0.042195 * 
+## Z_Anger_FaceMeanDIV   4.9138  4.9138     1 668.08  5.4970 0.019341 * 
+## Z_Fear_FaceMeanDIV    2.3307  2.3307     1 698.75  2.6074 0.106820   
+## Z_meanAccelB          4.5569  4.5569     1 469.71  5.0977 0.024416 * 
+## Z_meanSUM_N_IncAB     5.9694  5.9694     1 650.11  6.6778 0.009979 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Model Summary Disgust
+
+\begin{verbatim}
+## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+##   method [lmerModLmerTest]
+## Formula: Z_basic_disgust ~ Z_Neutral_FaceMeanDIV + Z_Sadness_FaceMeanDIV +  
+##     Z_Anger_FaceMeanDIV + Z_Fear_FaceMeanDIV + Z_meanAccelB +  
+##     Z_meanSUM_N_IncAB + (1 | ID)
+##    Data: ZnewFA_data
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1998.9   2040.0   -990.4   1980.9      702 
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.6127 -0.4370 -0.2345 -0.0415  5.1901 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  ID       (Intercept) 0.08728  0.2954  
+##  Residual             0.89391  0.9455  
+## Number of obs: 711, groups:  ID, 48
+## 
+## Fixed effects:
+##                         Estimate Std. Error         df t value Pr(>|t|)   
+## (Intercept)             0.003401   0.055513  47.392638   0.061  0.95141   
+## Z_Neutral_FaceMeanDIV  -0.092723   0.036440 664.732493  -2.545  0.01117 * 
+## Z_Sadness_FaceMeanDIV  -0.073971   0.036340 665.080497  -2.036  0.04219 * 
+## Z_Anger_FaceMeanDIV     0.086289   0.036804 668.080556   2.345  0.01934 * 
+## Z_Fear_FaceMeanDIV     -0.062013   0.038404 698.750097  -1.615  0.10682   
+## Z_meanAccelB            0.092291   0.040876 469.705882   2.258  0.02442 * 
+## Z_meanSUM_N_IncAB      -0.101584   0.039311 650.105758  -2.584  0.00998 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) Z_N_FM Z_S_FM Z_A_FM Z_F_FM Z_mnAB
+## Z_Ntr_FMDIV  0.001                                   
+## Z_Sdn_FMDIV -0.001  0.140                            
+## Z_Ang_FMDIV -0.002  0.079  0.160                     
+## Z_Fr_FcMDIV -0.013  0.140 -0.017 -0.151              
+## Z_meanAcclB -0.005  0.002  0.057  0.078 -0.020       
+## Z_SUM_N_IAB -0.014 -0.004  0.039 -0.030 -0.003  0.062
+\end{verbatim}
+
+Confidence Intervals Disgust
+
+\begin{verbatim}
+##                             2.5 %      97.5 %
+## .sig01                         NA          NA
+## .sigma                         NA          NA
+## (Intercept)           -0.10540217  0.11220388
+## Z_Neutral_FaceMeanDIV -0.16414451 -0.02130104
+## Z_Sadness_FaceMeanDIV -0.14519642 -0.00274559
+## Z_Anger_FaceMeanDIV    0.01415490  0.15842309
+## Z_Fear_FaceMeanDIV    -0.13728389  0.01325834
+## Z_meanAccelB           0.01217447  0.17240673
+## Z_meanSUM_N_IncAB     -0.17863136 -0.02453698
+\end{verbatim}
+
+\end{document}
